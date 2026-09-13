@@ -488,6 +488,20 @@ commit + push той же командой, что заводила репози
 `topics/*-backlog.md` и не придумывает новые темы сам — Stage 1 (бэклог)
 остаётся зоной `hub-writer`/Арсения.
 
+**Живая инфраструктура (задеплоено и проверено 2026-09-13):**
+- Routine: `trig_01TaUAKTfQBppXiR673ejqKZ` — https://claude.ai/code/routines/trig_01TaUAKTfQBppXiR673ejqKZ
+- Расписание: `30 */6 * * *` (каждые 6 часов, UTC)
+- Модель: claude-sonnet-5, окружение — Anthropic-hosted Default (`env_0197TDcKxpcCHVDpoU9PPy5A`)
+- Git-репозиторий контекста: `git@github.com:arbort/disrupt-hub.git` / `https://github.com/arbort/disrupt-hub` (приватный)
+- Секрет `ADMIN_SECRET` и invoke URL функции встроены прямо в промпт routine (хранятся в конфигурации routine на стороне Anthropic, не в git) — тот же секрет, что и в локальном `admin/scripts/.env.local`
+
+**Разовая настройка, без которой routine не запускается** (сделано 2026-09-13, здесь — чтобы не искать заново при пересоздании):
+1. **GitHub App «Claude»** должен быть установлен и дан доступ к репозиторию `arbort/disrupt-hub` — это НЕ то же самое, что просто иметь репозиторий. Ставится на https://github.com/apps/claude → Configure → Only select repositories. Без этого шага `RemoteTrigger create` возвращает `403: You don't have access to a repository this routine uses`, даже если репозиторий существует и SSH-доступ настроен локально — cloud-окружение Anthropic использует отдельный канал авторизации к GitHub, не связанный с локальным `git push`.
+2. **Network access окружения должен быть Custom с доменом `functions.yandexcloud.net`.** По умолчанию окружение на уровне **Trusted** — это только реестры пакетов и облачные SDK, Yandex Cloud Functions туда не входит. Без этого шага `curl` внутри routine падает с `connect_rejected (organization policy)`. Настраивается на claude.ai/code → иконка облака у поля ввода → шестерёнка окружения → Network access → Custom → добавить домен в Allowed domains.
+3. Оба шага делаются один раз на аккаунт (не на routine) — если понадобится второй routine к другому внешнему API, донастраивать Custom-домены в том же окружении, GitHub App переустанавливать не нужно.
+
+**Первый живой прогон (2026-09-13, ручной `run`, затем расписание подхватило само)**: статья «Как собрать презентацию для клиента без дизайнера за один вечер» (Мультитул) — 17 шагов, 121 секунда, `status: qc`, прошла ручную проверку Арсения содержательно без правок.
+
 ## Открытые вопросы
 
 - [ ] Нейминг платформы: `disrupt-hub.ru` зафиксирован Арсением или это

@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example
+!.env.*.example
+.publish-state.json

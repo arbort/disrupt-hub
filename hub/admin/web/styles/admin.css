@@ -400,4 +400,69 @@ textarea.body-editor {
   color: var(--primary-90);
 }
 .preview-box h1, .preview-box h2, .preview-box h3 { font-size: var(--ui-title-20-font-size); }
+
+/* --- Семантическая карта (добавлено 2026-09-18) --- */
+.semmap-intro { margin-bottom: var(--ui-space-24); }
+.semmap-compare {
+  margin-top: var(--ui-space-16);
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-10);
+}
+.semmap-compare__row { display: grid; grid-template-columns: 140px 1fr 220px; gap: var(--ui-space-10); align-items: center; }
+.semmap-compare__label { font-size: var(--ui-caption-font-size); color: var(--primary-60); }
+.semmap-compare__bars { display: flex; flex-direction: column; gap: 3px; }
+.semmap-compare__bar-track { background: var(--primary-4); border-radius: var(--ui-radius-full); height: 7px; overflow: hidden; }
+.semmap-compare__bar { height: 100%; border-radius: var(--ui-radius-full); }
+.semmap-compare__bar.agency { background: var(--primary-40); }
+.semmap-compare__bar.ours { background: var(--accent-blue); }
+.semmap-compare__pct { font-size: 11px; color: var(--primary-40); white-space: nowrap; }
+
+.semmap-product {
+  margin-bottom: var(--ui-space-32);
+  padding-bottom: var(--ui-space-24);
+  border-bottom: 1px solid var(--primary-8);
+}
+.semmap-product:last-child { border-bottom: none; }
+.semmap-product__header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--ui-space-10); margin-bottom: var(--ui-space-12); }
+.semmap-product__header h3 { margin: 0; font-size: var(--ui-title-20-font-size); }
+.semmap-band-chips { display: flex; gap: var(--ui-space-6); flex-wrap: wrap; }
+.semmap-chip {
+  font-size: 11px;
+  padding: 2px var(--ui-space-8);
+  border: 1px solid var(--primary-10);
+  border-radius: var(--ui-radius-full);
+}
+
+.semmap-section { margin-top: var(--ui-space-12); }
+.semmap-section h4 {
+  font-size: var(--ui-caption-font-size);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--primary-40);
+  margin: 0 0 var(--ui-space-8);
+}
+.semmap-section--gaps { margin-top: var(--ui-space-20); }
+.semmap-section--gaps h4 { color: var(--accent-green); }
+
+.semmap-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 280px) 1fr 90px minmax(0, 220px);
+  gap: var(--ui-space-10);
+  align-items: center;
+  padding: 3px 0;
+  font-size: var(--ui-caption-font-size);
+}
+.semmap-row__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--primary-90); }
+.semmap-row__track { background: var(--primary-4); border-radius: var(--ui-radius-full); height: 8px; overflow: hidden; }
+.semmap-row__fill { height: 100%; border-radius: var(--ui-radius-full); }
+.semmap-row__count { text-align: right; font-family: var(--ui-font-mono); color: var(--primary-60); white-space: nowrap; }
+.semmap-row__meta { color: var(--primary-40); font-size: 11px; font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .semmap-row { grid-template-columns: 1fr; }
+  .semmap-row__meta { display: none; }
+  .semmap-compare__row { grid-template-columns: 1fr; }
+}
 .preview-box img { border-radius: var(--ui-radius-8); }

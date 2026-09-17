@@ -599,8 +599,10 @@ const viewArticlesEl = document.getElementById("view-articles");
 const viewRegistryEl = document.getElementById("view-registry");
 const viewBriefsEl = document.getElementById("view-briefs");
 const viewSyndicationEl = document.getElementById("view-syndication");
+const viewSemanticEl = document.getElementById("view-semantic");
 let topics = null; // кэш data/topics.json, грузится один раз за сессию
 let topicFreqDetails = null; // кэш data/topic-frequency-details.json — разбивка по похожим/смежным запросам
+let semanticMap = null; // кэш data/semantic-map.json (вкладка "Семантическая карта")
 let registrySort = { key: null, dir: "desc" }; // сортировка таблицы реестра по клику на заголовок колонки
 let registryRowsById = new Map(); // последний рендер реестра — для модалки деталей по клику
 let briefRowsByTopicId = new Map(); // последний рендер вкладки "ТЗ" — для модалки и для ссылки "ТЗ →" из реестра тем
@@ -609,6 +611,7 @@ document.getElementById("tab-articles").addEventListener("click", () => switchTa
 document.getElementById("tab-registry").addEventListener("click", () => switchTab("registry"));
 document.getElementById("tab-briefs").addEventListener("click", () => switchTab("briefs"));
 document.getElementById("tab-syndication").addEventListener("click", () => switchTab("syndication"));
+document.getElementById("tab-semantic").addEventListener("click", () => switchTab("semantic"));
 
 function switchTab(name) {
   for (const btn of document.querySelectorAll(".tab")) btn.classList.toggle("is-active", btn.dataset.tab === name);
@@ -616,9 +619,11 @@ function switchTab(name) {
   viewRegistryEl.hidden = name !== "registry";
   viewBriefsEl.hidden = name !== "briefs";
   viewSyndicationEl.hidden = name !== "syndication";
+  viewSemanticEl.hidden = name !== "semantic";
   if (name === "registry") loadRegistry();
   if (name === "briefs") loadBriefs();
   if (name === "syndication") loadSyndications();
+  if (name === "semantic") loadSemanticMap();
 }
 
 // ---------- registry (реестр тем) ----------
@@ -1378,6 +1383,156 @@ async function deleteSyndication() {
   currentSyndication = null;
   await loadSyndications(true);
   renderSyndicationEditor();
+}
+
+// ---------- Семантическая карта (добавлено 2026-09-18) ----------
+//
+// Арсений отметил: подбор тем упирается в некорректный сбор семантики.
+// Разбор реального файла агентства giga.chat (semantic core, лист
+// "Предлагаемые страницы", 387 строк) показал: медиана WS на уровне
+// готовой страницы — 14 068, самая частая полоса — 5 000-20 000 (25.6%
+// страниц — больше, чем любая другая полоса). У наших 90 тем хаба на
+// момент этого разбора медиана — 19(!), 86.6% тем ниже 1000: почти весь
+// бэклог (кроме тестовой партии Мультитула) заведён под придуманные узкие
+// формулировки, а не под реальный спрос — см. HUB.md, "Семантическая
+// карта" для полного логического разбора, почему агентство не берёт ни
+// сверхширокие головы, ни сверхузкие хвосты.
+//
+// Данные строит build-semantic-map.py (не в реальном времени, статика —
+// тот же принцип "не трогать Cloud Function", что у topics.json): для
+// каждого продукта раскладывает уже собранные фразы (голова темы +
+// похожие из Wordstat) по полосам объёма и отдельно выделяет "зоны
+// роста" — фразы приличного объёма, ещё не занятые ни одной темой.
+const SEMMAP_BAND_META = {
+  long_tail: { label: "Длинный хвост", color: "var(--primary-40)" },
+  narrow: { label: "Узкая, но реальная", color: "var(--accent-blue)" },
+  sweet_spot: { label: "Целевая зона", color: "var(--accent-green)" },
+  head: { label: "Широкая голова", color: "var(--accent-orange)" },
+};
+
+async function loadSemanticMap() {
+  document.getElementById("semantic-products").innerHTML = '<div class="empty-list">Загрузка…</div>';
+  try {
+    if (!semanticMap) {
+      const res = await fetch("data/semantic-map.json", { cache: "no-store" });
+      if (!res.ok) throw new Error(String(res.status));
+      semanticMap = await res.json();
+    }
+    renderSemanticMap();
+  } catch (e) {
+    document.getElementById("semantic-products").innerHTML =
+      '<div class="empty-list">Не удалось загрузить карту (data/semantic-map.json) — прогоните: python3 admin/scripts/build-semantic-map.py и задеплойте админку.</div>';
+  }
+}
+
+function semmapBarWidth(count, maxLog) {
+  if (!count || count <= 0) return 2;
+  const pct = (Math.log10(count + 1) / maxLog) * 100;
+  return Math.max(3, Math.min(100, pct));
+}
+
+function semmapBarRow(label, count, band, maxLog, meta) {
+  const m = SEMMAP_BAND_META[band] || SEMMAP_BAND_META.long_tail;
+  const width = semmapBarWidth(count, maxLog);
+  return `
+    <div class="semmap-row">
+      <div class="semmap-row__label" title="${escapeHtml(label)}">${escapeHtml(label)}</div>
+      <div class="semmap-row__track"><div class="semmap-row__fill" style="width:${width}%;background:${m.color}"></div></div>
+      <div class="semmap-row__count">${count != null ? count.toLocaleString("ru-RU") : "—"}</div>
+      <div class="semmap-row__meta">${escapeHtml(meta || "")}</div>
+    </div>`;
+}
+
+function renderSemanticMap() {
+  if (!semanticMap) return;
+  const { bands, agencyBenchmark, products } = semanticMap;
+
+  // --- сводка сверху: почему такие полосы и как мы выглядим на их фоне ---
+  const ourCounts = { long_tail: 0, narrow: 0, sweet_spot: 0, head: 0 };
+  let ourTotal = 0;
+  for (const p of Object.values(products)) {
+    for (const [band, n] of Object.entries(p.bandCounts)) {
+      ourCounts[band] += n;
+      ourTotal += n;
+    }
+  }
+  const ourSharePct = (band) => (ourTotal ? Math.round((ourCounts[band] / ourTotal) * 1000) / 10 : 0);
+
+  document.getElementById("semantic-intro").innerHTML = `
+    <h2 style="margin:0 0 var(--ui-space-8)">Семантическая карта</h2>
+    <p class="modal-note" style="font-size:var(--ui-subtitle-font-size);color:var(--primary-70);max-width:820px">
+      Агентство giga.chat не берёт ни сверхширокие головы («нейросеть» — сотни тысяч,
+      выдача занята гигантами и брендами), ни сверхузкие хвосты (десятки запросов —
+      трафика нет физически). У них медиана объёма на уровне готовой страницы —
+      <strong>${agencyBenchmark.medianWS.toLocaleString("ru-RU")}</strong>
+      (${agencyBenchmark.pagesWithData} страниц), самая частая полоса — «Целевая зона»
+      5 000–20 000 (${agencyBenchmark.bandSharePct.sweet_spot}% страниц). У хаба сейчас
+      медиана — ${(() => {
+        const allF = Object.values(products).flatMap((p) => p.topics.map((t) => t.frequency).filter((f) => f != null)).sort((a, b) => a - b);
+        return allF.length ? allF[Math.floor(allF.length / 2)].toLocaleString("ru-RU") : "—";
+      })()},
+      бо́льшая часть тем — длинный хвост. Ниже — по каждому продукту: где сейчас стоит
+      бэклог и какие уже найденные, но не занятые фразы приличного объёма стоит
+      рассмотреть под новые темы («Зоны роста»).
+    </p>
+    <div class="semmap-compare">
+      ${bands.map((b) => `
+        <div class="semmap-compare__row">
+          <div class="semmap-compare__label">${escapeHtml(b.label)}</div>
+          <div class="semmap-compare__bars">
+            <div class="semmap-compare__bar-track"><div class="semmap-compare__bar agency" style="width:${agencyBenchmark.bandSharePct[b.id]}%"></div></div>
+            <div class="semmap-compare__bar-track"><div class="semmap-compare__bar ours" style="width:${ourSharePct(b.id)}%"></div></div>
+          </div>
+          <div class="semmap-compare__pct">giga.chat ${agencyBenchmark.bandSharePct[b.id]}% · хаб ${ourSharePct(b.id)}%</div>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
+  // --- по продукту ---
+  const allCounts = [];
+  for (const p of Object.values(products)) {
+    for (const t of p.topics) if (t.frequency != null) allCounts.push(t.frequency);
+    for (const g of p.growthGaps) allCounts.push(g.count);
+  }
+  const maxLog = Math.max(1, Math.log10(Math.max(1, ...allCounts) + 1));
+
+  const productsHtml = PRODUCTS.filter((prod) => products[prod.slug]).map((prod) => {
+    const p = products[prod.slug];
+    const chips = bands.map((b) => `<span class="semmap-chip" style="border-color:${SEMMAP_BAND_META[b.id].color};color:${SEMMAP_BAND_META[b.id].color}">${escapeHtml(b.label)}: ${p.bandCounts[b.id] || 0}</span>`).join("");
+
+    const topicsSorted = [...p.topics].sort((a, b) => (b.frequency || -1) - (a.frequency || -1));
+    const topicsHtml = topicsSorted.map((t) => {
+      const meta = t.headPhrase && norm(t.headPhrase) !== norm(t.title) ? `«${t.headPhrase}»` : "";
+      return semmapBarRow(`${t.topicId} · ${t.title}`, t.frequency, t.band, maxLog, meta);
+    }).join("");
+
+    const gapsHtml = p.growthGaps.length
+      ? `<div class="semmap-section semmap-section--gaps">
+          <h4>Зоны роста — не проверено вручную, может быть шум/бренд конкурента</h4>
+          ${p.growthGaps.map((g) => semmapBarRow(g.phrase, g.count, g.band, maxLog, `увидено в similar у ${g.seenFrom}`)).join("")}
+        </div>`
+      : `<div class="semmap-section semmap-section--gaps"><div class="empty-list">Зон роста не найдено (нет собранной разбивки Wordstat для тем этого продукта)</div></div>`;
+
+    return `
+      <div class="semmap-product">
+        <div class="semmap-product__header">
+          <h3>${prod.name}</h3>
+          <div class="semmap-band-chips">${chips}</div>
+        </div>
+        <div class="semmap-section">
+          <h4>Темы бэклога по объёму спроса</h4>
+          ${topicsHtml || '<div class="empty-list">Нет тем с данными</div>'}
+        </div>
+        ${gapsHtml}
+      </div>`;
+  }).join("");
+
+  document.getElementById("semantic-products").innerHTML = productsHtml;
+}
+
+function norm(s) {
+  return (s || "").trim().toLowerCase();
 }
 
 boot();

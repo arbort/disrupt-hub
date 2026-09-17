@@ -1,0 +1,1261 @@
+{
+  "generatedAt": "2026-09-17T21:19:19.349266+00:00",
+  "bands": [
+    {
+      "id": "long_tail",
+      "label": "Длинный хвост",
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "id": "narrow",
+      "label": "Узкая, но реальная",
+      "min": 1000,
+      "max": 5000
+    },
+    {
+      "id": "sweet_spot",
+      "label": "Целевая зона",
+      "min": 5000,
+      "max": 20000
+    },
+    {
+      "id": "head",
+      "label": "Широкая голова",
+      "min": 20000,
+      "max": null
+    }
+  ],
+  "agencyBenchmark": {
+    "source": "giga_chat_семантическое_ядро_общее_c_Ptraf_2025_10_31_обн_04_05.xlsx, лист «Предлагаемые страницы»",
+    "pagesWithData": 387,
+    "medianWS": 14068,
+    "bandSharePct": {
+      "long_tail": 11.6,
+      "narrow": 18.6,
+      "sweet_spot": 25.6,
+      "head": 44.2
+    }
+  },
+  "products": {
+    "aiwa": {
+      "topics": [
+        {
+          "topicId": "aiwa-1",
+          "number": 1,
+          "title": "Как считать калории по фото тарелки без ручного ввода",
+          "status": "идея",
+          "frequency": 2290,
+          "band": "narrow",
+          "headPhrase": "подсчет калорий по фото",
+          "headTotalCount": 2290
+        },
+        {
+          "topicId": "aiwa-2",
+          "number": 2,
+          "title": "Персональное меню под свои ограничения и цели",
+          "status": "идея",
+          "frequency": 765,
+          "band": "long_tail",
+          "headPhrase": "составить меню для похудения",
+          "headTotalCount": 765
+        },
+        {
+          "topicId": "aiwa-3",
+          "number": 3,
+          "title": "Тренировка на сегодня с учётом самочувствия и инвентаря",
+          "status": "идея",
+          "frequency": 3002,
+          "band": "narrow",
+          "headPhrase": "тренировка на сегодня",
+          "headTotalCount": 3002
+        },
+        {
+          "topicId": "aiwa-4",
+          "number": 4,
+          "title": "Как выглядит утренняя сводка от Айвы",
+          "status": "идея",
+          "frequency": 15,
+          "band": "long_tail",
+          "headPhrase": "ии ассистент для здоровья",
+          "headTotalCount": 15
+        },
+        {
+          "topicId": "aiwa-5",
+          "number": 5,
+          "title": "Питание, нагрузка и самочувствие в одной картине вместо трёх приложений",
+          "status": "идея",
+          "frequency": 15,
+          "band": "long_tail",
+          "headPhrase": "трекер питания и тренировок",
+          "headTotalCount": 15
+        },
+        {
+          "topicId": "aiwa-6",
+          "number": 6,
+          "title": "Питание и нагрузка по фазе цикла: что меняется по неделям",
+          "status": "идея",
+          "frequency": 31,
+          "band": "long_tail",
+          "headPhrase": "тренировки по фазам цикла",
+          "headTotalCount": 27
+        },
+        {
+          "topicId": "aiwa-7",
+          "number": 7,
+          "title": "Айва во время беременности: как ведёт срок и триместры",
+          "status": "идея",
+          "frequency": 1648,
+          "band": "narrow",
+          "headPhrase": "трекер беременности",
+          "headTotalCount": 98
+        },
+        {
+          "topicId": "aiwa-8",
+          "number": 8,
+          "title": "Режим поддержки в менопаузу: что показывает и советует",
+          "status": "идея",
+          "frequency": 9,
+          "band": "long_tail",
+          "headPhrase": "приложение для менопаузы",
+          "headTotalCount": 9
+        },
+        {
+          "topicId": "aiwa-9",
+          "number": 9,
+          "title": "Выписка для врача из истории цикла и симптомов одним документом",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "трекер цикла для врача",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "aiwa-10",
+          "number": 10,
+          "title": "Сводка для партнёра: как работает функция поддержки",
+          "status": "идея",
+          "frequency": 27,
+          "band": "long_tail",
+          "headPhrase": "отслеживание цикла для партнера",
+          "headTotalCount": 27
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 6,
+        "narrow": 3,
+        "sweet_spot": 0,
+        "head": 0
+      },
+      "topicsWithData": 9,
+      "topicsTotal": 10,
+      "growthGaps": []
+    },
+    "concierge": {
+      "topics": [
+        {
+          "topicId": "concierge-1",
+          "number": 1,
+          "title": "Забронировать столик в ресторане, где нет онлайн-брони",
+          "status": "идея",
+          "frequency": 11,
+          "band": "long_tail",
+          "headPhrase": "как забронировать столик по телефону",
+          "headTotalCount": 11
+        },
+        {
+          "topicId": "concierge-2",
+          "number": 2,
+          "title": "Записаться в салон или клинику, не звоня самому",
+          "status": "идея",
+          "frequency": 357,
+          "band": "long_tail",
+          "headPhrase": "записаться в клинику онлайн",
+          "headTotalCount": 357
+        },
+        {
+          "topicId": "concierge-3",
+          "number": 3,
+          "title": "Спланировать отпуск целиком — от билетов до маршрута по дням",
+          "status": "идея",
+          "frequency": 8,
+          "band": "long_tail",
+          "headPhrase": "спланировать отпуск с помощью ии",
+          "headTotalCount": 8
+        },
+        {
+          "topicId": "concierge-4",
+          "number": 4,
+          "title": "Как агент сводит инфо с сайта, меню и PDF в один понятный ответ",
+          "status": "идея",
+          "frequency": 13,
+          "band": "long_tail",
+          "headPhrase": "ии помощник для поиска информации",
+          "headTotalCount": 13
+        },
+        {
+          "topicId": "concierge-5",
+          "number": 5,
+          "title": "Разовое и регулярное напоминание, которое агент не забудет",
+          "status": "идея",
+          "frequency": 182,
+          "band": "long_tail",
+          "headPhrase": "ии напоминания",
+          "headTotalCount": 140
+        },
+        {
+          "topicId": "concierge-6",
+          "number": 6,
+          "title": "Как агент разрешает спор в чате компании друзей фактами",
+          "status": "идея",
+          "frequency": 39,
+          "band": "long_tail",
+          "headPhrase": "разрешить спор фактами",
+          "headTotalCount": 45
+        },
+        {
+          "topicId": "concierge-7",
+          "number": 7,
+          "title": "Смягчить сложное сообщение или вежливо отказаться с помощью агента",
+          "status": "идея",
+          "frequency": 9431,
+          "band": "sweet_spot",
+          "headPhrase": "как вежливо отказать",
+          "headTotalCount": 9556
+        },
+        {
+          "topicId": "concierge-8",
+          "number": 8,
+          "title": "Консьерж в MAX: как поручить дело, не открывая Telegram",
+          "status": "идея",
+          "frequency": 5,
+          "band": "long_tail",
+          "headPhrase": "мессенджер max ии помощник",
+          "headTotalCount": 6
+        },
+        {
+          "topicId": "concierge-9",
+          "number": 9,
+          "title": "Кейс: «было занято — договорился на 20:30» — как выглядит звонок агента",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "ии звонит по телефону вместо меня",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "concierge-10",
+          "number": 10,
+          "title": "Добавить Консьержа в общий чат семьи или компании",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "ии помощник в групповом чате",
+          "headTotalCount": null
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 7,
+        "narrow": 0,
+        "sweet_spot": 1,
+        "head": 0
+      },
+      "topicsWithData": 8,
+      "topicsTotal": 10,
+      "growthGaps": [
+        {
+          "phrase": "как вежливо отказать человеку",
+          "count": 1706,
+          "band": "narrow",
+          "seenFrom": "concierge-7"
+        },
+        {
+          "phrase": "как вежливо отказать работодателю",
+          "count": 1441,
+          "band": "narrow",
+          "seenFrom": "concierge-7"
+        },
+        {
+          "phrase": "как отказать в работе вежливо",
+          "count": 1029,
+          "band": "narrow",
+          "seenFrom": "concierge-7"
+        }
+      ]
+    },
+    "gochi": {
+      "topics": [
+        {
+          "topicId": "gochi-1",
+          "number": 1,
+          "title": "Как завести и покормить своего ИИ-питомца в Гочи с первого дня",
+          "status": "идея",
+          "frequency": 6,
+          "band": "long_tail",
+          "headPhrase": "виртуальный питомец с ии",
+          "headTotalCount": 6
+        },
+        {
+          "topicId": "gochi-2",
+          "number": 2,
+          "title": "Гардероб для ИИ-питомца: как подбирать ему одежду в Гочи",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "одежда для виртуального питомца",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "gochi-3",
+          "number": 3,
+          "title": "Куда отправить питомца в путешествие в Гочи",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "виртуальный питомец путешествия",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "gochi-4",
+          "number": 4,
+          "title": "Тамагочи с ИИ: чем цифровой питомец Гочи отличается от игрушки 90-х",
+          "status": "идея",
+          "frequency": 17,
+          "band": "long_tail",
+          "headPhrase": "тамагочи с искусственным интеллектом",
+          "headTotalCount": 17
+        },
+        {
+          "topicId": "gochi-5",
+          "number": 5,
+          "title": "Один день из жизни ИИ-питомца: что значит «живёт своей жизнью» в Гочи",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "ии питомец живет своей жизнью",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "gochi-6",
+          "number": 6,
+          "title": "Как установить Гочи на Android без Google Play",
+          "status": "идея",
+          "frequency": 36,
+          "band": "long_tail",
+          "headPhrase": "скачать apk без google play",
+          "headTotalCount": 37
+        },
+        {
+          "topicId": "gochi-7",
+          "number": 7,
+          "title": "Гочи для iOS: когда ждать и что доступно уже сейчас на Android",
+          "status": "идея",
+          "frequency": 2,
+          "band": "long_tail",
+          "headPhrase": "тамагочи приложение для айфон",
+          "headTotalCount": 2
+        },
+        {
+          "topicId": "gochi-8",
+          "number": 8,
+          "title": "ИИ-питомец как альтернатива играм-таймкиллерам в телефоне",
+          "status": "идея",
+          "frequency": 19,
+          "band": "long_tail",
+          "headPhrase": "антистресс игра на телефоне",
+          "headTotalCount": 21
+        },
+        {
+          "topicId": "gochi-9",
+          "number": 9,
+          "title": "Кейс: как выглядит уход за ИИ-питомцем неделю подряд",
+          "status": "идея",
+          "frequency": 18,
+          "band": "long_tail",
+          "headPhrase": "уход за виртуальным питомцем",
+          "headTotalCount": 22
+        },
+        {
+          "topicId": "gochi-10",
+          "number": 10,
+          "title": "ИИ-питомец для тех, кто скучает по тамагочи, но хочет что-то новое",
+          "status": "идея",
+          "frequency": 41,
+          "band": "long_tail",
+          "headPhrase": "тамагочи для взрослых",
+          "headTotalCount": 41
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 7,
+        "narrow": 0,
+        "sweet_spot": 0,
+        "head": 0
+      },
+      "topicsWithData": 7,
+      "topicsTotal": 10,
+      "growthGaps": []
+    },
+    "korche": {
+      "topics": [
+        {
+          "topicId": "korche-1",
+          "number": 1,
+          "title": "Как собрать сайты и Telegram-каналы в одну ленту новостей в Короче",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "агрегатор новостей из телеграм каналов",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "korche-2",
+          "number": 2,
+          "title": "Задать вопрос по конкретной новости «всезнающему Корочеславу»",
+          "status": "идея",
+          "frequency": 3,
+          "band": "long_tail",
+          "headPhrase": "задать вопрос по новости ии",
+          "headTotalCount": 3
+        },
+        {
+          "topicId": "korche-3",
+          "number": 3,
+          "title": "Как работает фактчек новости в Короче",
+          "status": "идея",
+          "frequency": 7,
+          "band": "long_tail",
+          "headPhrase": "проверка новости на фейк",
+          "headTotalCount": 5
+        },
+        {
+          "topicId": "korche-4",
+          "number": 4,
+          "title": "Пересказать сложную новость простыми словами: как менять стиль в Короче",
+          "status": "идея",
+          "frequency": 147,
+          "band": "long_tail",
+          "headPhrase": "пересказать текст простыми словами",
+          "headTotalCount": 178
+        },
+        {
+          "topicId": "korche-5",
+          "number": 5,
+          "title": "«Мнение со стороны» на новость: как это выглядит в Короче",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "альтернативная точка зрения на новость",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "korche-6",
+          "number": 6,
+          "title": "Как попасть в закрытую бету Короче через Telegram-инвайт",
+          "status": "идея",
+          "frequency": 44,
+          "band": "long_tail",
+          "headPhrase": "как попасть в закрытую бету",
+          "headTotalCount": 48
+        },
+        {
+          "topicId": "korche-7",
+          "number": 7,
+          "title": "Одна лента вместо десяти каналов: подключить свои источники в Короче",
+          "status": "идея",
+          "frequency": 6619,
+          "band": "sweet_spot",
+          "headPhrase": "персональная лента новостей",
+          "headTotalCount": 6603
+        },
+        {
+          "topicId": "korche-8",
+          "number": 8,
+          "title": "Хронология новости от начала до сегодняшнего дня в одном месте",
+          "status": "идея",
+          "frequency": 7,
+          "band": "long_tail",
+          "headPhrase": "хронология событий по новости",
+          "headTotalCount": 7
+        },
+        {
+          "topicId": "korche-9",
+          "number": 9,
+          "title": "Как объяснить ребёнку сложную новость с помощью Короче",
+          "status": "идея",
+          "frequency": 12,
+          "band": "long_tail",
+          "headPhrase": "как объяснить новость ребенку",
+          "headTotalCount": 11
+        },
+        {
+          "topicId": "korche-10",
+          "number": 10,
+          "title": "Короче вместо ручного мониторинга новостей по работе",
+          "status": "идея",
+          "frequency": 9,
+          "band": "long_tail",
+          "headPhrase": "мониторинг новостей по теме",
+          "headTotalCount": 8
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 7,
+        "narrow": 0,
+        "sweet_spot": 1,
+        "head": 0
+      },
+      "topicsWithData": 8,
+      "topicsTotal": 10,
+      "growthGaps": [
+        {
+          "phrase": "дзен персональная лента новостей",
+          "count": 6403,
+          "band": "sweet_spot",
+          "seenFrom": "korche-7"
+        },
+        {
+          "phrase": "яндекс дзен персональная лента новостей",
+          "count": 6245,
+          "band": "sweet_spot",
+          "seenFrom": "korche-7"
+        },
+        {
+          "phrase": "дзен персональная лента новостей читать",
+          "count": 2528,
+          "band": "narrow",
+          "seenFrom": "korche-7"
+        },
+        {
+          "phrase": "дзен яндекс лента персональных новостей читать",
+          "count": 2528,
+          "band": "narrow",
+          "seenFrom": "korche-7"
+        },
+        {
+          "phrase": "лента новостей яндекс персональных читать",
+          "count": 2528,
+          "band": "narrow",
+          "seenFrom": "korche-7"
+        },
+        {
+          "phrase": "дзен яндекс персональная лента новостей бесплатно",
+          "count": 2343,
+          "band": "narrow",
+          "seenFrom": "korche-7"
+        },
+        {
+          "phrase": "лента персональных новостей читать онлайн бесплатно",
+          "count": 2293,
+          "band": "narrow",
+          "seenFrom": "korche-7"
+        },
+        {
+          "phrase": "яндекс дзен персональная лента новостей онлайн",
+          "count": 2293,
+          "band": "narrow",
+          "seenFrom": "korche-7"
+        },
+        {
+          "phrase": "персональная лента новостей на яндекс",
+          "count": 1198,
+          "band": "narrow",
+          "seenFrom": "korche-7"
+        }
+      ]
+    },
+    "memento": {
+      "topics": [
+        {
+          "topicId": "memento-1",
+          "number": 1,
+          "title": "Как автоматически получить итоги встречи с договорённостями и следующими шагами",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "расшифровка совещания с итогами",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "memento-2",
+          "number": 2,
+          "title": "Спросить у Memento, что обсуждали на встрече месяц назад",
+          "status": "идея",
+          "frequency": 2,
+          "band": "long_tail",
+          "headPhrase": "поиск по записям встреч",
+          "headTotalCount": 5
+        },
+        {
+          "topicId": "memento-3",
+          "number": 3,
+          "title": "Как искать конкретный момент внутри записи одной встречи",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "поиск по видеозаписи встречи",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "memento-4",
+          "number": 4,
+          "title": "Установка Memento на macOS: с чего начать запись первой встречи",
+          "status": "идея",
+          "frequency": 1,
+          "band": "long_tail",
+          "headPhrase": "запись встречи на mac",
+          "headTotalCount": 1
+        },
+        {
+          "topicId": "memento-5",
+          "number": 5,
+          "title": "Как ИИ собирает список следующих шагов из обсуждения на встрече",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "извлечение action items из встречи",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "memento-6",
+          "number": 6,
+          "title": "Memento вместо ручных заметок на созвоне",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "автоматический конспект созвона",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "memento-7",
+          "number": 7,
+          "title": "Какие данные встречи остаются на компьютере, а какие уходят в облако у Memento",
+          "status": "идея — блокировано",
+          "frequency": 6,
+          "band": "long_tail",
+          "headPhrase": "локальная обработка данных без облака",
+          "headTotalCount": 13
+        },
+        {
+          "topicId": "memento-8",
+          "number": 8,
+          "title": "Как задать Memento вопрос сразу по нескольким встречам",
+          "status": "идея",
+          "frequency": 4,
+          "band": "long_tail",
+          "headPhrase": "поиск по нескольким встречам",
+          "headTotalCount": 2
+        },
+        {
+          "topicId": "memento-9",
+          "number": 9,
+          "title": "Windows и Linux в планах: что доступно на macOS уже сейчас",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "программа для записи встреч на windows",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "memento-10",
+          "number": 10,
+          "title": "Memento для команд: как делиться итогами встречи с теми, кто не присутствовал",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "поделиться протоколом встречи",
+          "headTotalCount": null
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 4,
+        "narrow": 0,
+        "sweet_spot": 0,
+        "head": 0
+      },
+      "topicsWithData": 4,
+      "topicsTotal": 10,
+      "growthGaps": []
+    },
+    "narra": {
+      "topics": [
+        {
+          "topicId": "narra-1",
+          "number": 1,
+          "title": "Как заставить книгу звучать разными голосами в Narra",
+          "status": "идея",
+          "frequency": 93,
+          "band": "long_tail",
+          "headPhrase": "аудиокнига разными голосами",
+          "headTotalCount": 68
+        },
+        {
+          "topicId": "narra-2",
+          "number": 2,
+          "title": "Поговорить с героем книги: как работает чат с персонажем в Narra",
+          "status": "идея",
+          "frequency": 37,
+          "band": "long_tail",
+          "headPhrase": "чат с персонажем книги",
+          "headTotalCount": 33
+        },
+        {
+          "topicId": "narra-3",
+          "number": 3,
+          "title": "Как ИИ «оживляет» персонажа по описанию из текста книги",
+          "status": "идея",
+          "frequency": 1,
+          "band": "long_tail",
+          "headPhrase": "оживить персонажа книги ии",
+          "headTotalCount": 2
+        },
+        {
+          "topicId": "narra-4",
+          "number": 4,
+          "title": "Аудиокнига или Narra: чем интерактивная читалка отличается от обычной озвучки",
+          "status": "идея",
+          "frequency": 38,
+          "band": "long_tail",
+          "headPhrase": "интерактивная аудиокнига",
+          "headTotalCount": 44
+        },
+        {
+          "topicId": "narra-5",
+          "number": 5,
+          "title": "Как попасть в бету Narra на iOS через TestFlight",
+          "status": "идея",
+          "frequency": 4,
+          "band": "long_tail",
+          "headPhrase": "как попасть в testflight",
+          "headTotalCount": 4
+        },
+        {
+          "topicId": "narra-6",
+          "number": 6,
+          "title": "Narra на Android: установка и первый запуск",
+          "status": "идея",
+          "frequency": 16,
+          "band": "long_tail",
+          "headPhrase": "приложение для чтения книг с озвучкой",
+          "headTotalCount": 19
+        },
+        {
+          "topicId": "narra-7",
+          "number": 7,
+          "title": "Разговор с любимым книжным персонажем как повод перечитать книгу",
+          "status": "идея",
+          "frequency": 11,
+          "band": "long_tail",
+          "headPhrase": "поговорить с литературным героем",
+          "headTotalCount": 23
+        },
+        {
+          "topicId": "narra-8",
+          "number": 8,
+          "title": "Что происходит, если поговорить со второстепенным героем книги в Narra",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "чат с второстепенным персонажем книги",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "narra-9",
+          "number": 9,
+          "title": "Слушать книгу голосами персонажей вместо одного диктора",
+          "status": "идея",
+          "frequency": 2,
+          "band": "long_tail",
+          "headPhrase": "аудиокнига с озвучкой персонажей",
+          "headTotalCount": 3
+        },
+        {
+          "topicId": "narra-10",
+          "number": 10,
+          "title": "Бета-тестирование Narra: что доступно бесплатно уже сейчас",
+          "status": "идея",
+          "frequency": 869,
+          "band": "long_tail",
+          "headPhrase": "бесплатное приложение для аудиокниг",
+          "headTotalCount": 883
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 9,
+        "narrow": 0,
+        "sweet_spot": 0,
+        "head": 0
+      },
+      "topicsWithData": 9,
+      "topicsTotal": 10,
+      "growthGaps": []
+    },
+    "radar": {
+      "topics": [
+        {
+          "topicId": "radar-1",
+          "number": 1,
+          "title": "Как проверить продуктовую гипотезу за 15 минут вместо дня ручного ресёрча в Disrupt Radar",
+          "status": "идея",
+          "frequency": 36,
+          "band": "long_tail",
+          "headPhrase": "как проверить бизнес идею",
+          "headTotalCount": 44
+        },
+        {
+          "topicId": "radar-2",
+          "number": 2,
+          "title": "Лента «Ранние проекты»: как находить растущие стартапы раньше остальных",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "найти растущие стартапы",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "radar-3",
+          "number": 3,
+          "title": "Как устроен отчёт с источниками на присланную гипотезу в Disrupt Radar",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "проверка бизнес идеи с источниками",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "radar-4",
+          "number": 4,
+          "title": "Гостевой профиль на 30 дней: как попробовать Disrupt Radar без регистрации",
+          "status": "идея",
+          "frequency": 2,
+          "band": "long_tail",
+          "headPhrase": "попробовать сервис без регистрации",
+          "headTotalCount": 2
+        },
+        {
+          "topicId": "radar-5",
+          "number": 5,
+          "title": "Кодовая фраза вместо пароля: как работает вход в Disrupt Radar на нескольких устройствах",
+          "status": "идея",
+          "frequency": 234015,
+          "band": "head",
+          "headPhrase": "вход без пароля",
+          "headTotalCount": 234028
+        },
+        {
+          "topicId": "radar-6",
+          "number": 6,
+          "title": "Как отследить, что запускают крупные игроки рынка ИИ, одной лентой",
+          "status": "идея",
+          "frequency": 4,
+          "band": "long_tail",
+          "headPhrase": "новости рынка искусственного интеллекта",
+          "headTotalCount": 5
+        },
+        {
+          "topicId": "radar-7",
+          "number": 7,
+          "title": "Проверка идеи стартапа доказательствами, а не мнением фаундера",
+          "status": "идея",
+          "frequency": 3,
+          "band": "long_tail",
+          "headPhrase": "валидация бизнес идеи",
+          "headTotalCount": 4
+        },
+        {
+          "topicId": "radar-8",
+          "number": 8,
+          "title": "Как сохранить и вернуться к интересным находкам в Disrupt Radar",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "сохранить интересные стартапы",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "radar-9",
+          "number": 9,
+          "title": "Чем витрина Disrupt Radar отличается от ручного мониторинга Product Hunt и профильных чатов",
+          "status": "идея",
+          "frequency": 8,
+          "band": "long_tail",
+          "headPhrase": "аналог product hunt",
+          "headTotalCount": 10
+        },
+        {
+          "topicId": "radar-10",
+          "number": 10,
+          "title": "Кейс: гипотеза, которую отчёт Disrupt Radar опроверг источниками",
+          "status": "идея",
+          "frequency": 1,
+          "band": "long_tail",
+          "headPhrase": "провалившаяся бизнес гипотеза",
+          "headTotalCount": 1
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 6,
+        "narrow": 0,
+        "sweet_spot": 0,
+        "head": 1
+      },
+      "topicsWithData": 7,
+      "topicsTotal": 10,
+      "growthGaps": [
+        {
+          "phrase": "вход без логина и пароля",
+          "count": 163301,
+          "band": "head",
+          "seenFrom": "radar-5"
+        },
+        {
+          "phrase": "моя страница вход без пароля",
+          "count": 143774,
+          "band": "head",
+          "seenFrom": "radar-5"
+        },
+        {
+          "phrase": "страница вход без логина и пароля",
+          "count": 118089,
+          "band": "head",
+          "seenFrom": "radar-5"
+        },
+        {
+          "phrase": "одноклассники вход без пароля",
+          "count": 110364,
+          "band": "head",
+          "seenFrom": "radar-5"
+        },
+        {
+          "phrase": "вход по номеру без пароля",
+          "count": 91498,
+          "band": "head",
+          "seenFrom": "radar-5"
+        },
+        {
+          "phrase": "вход по номеру телефона без пароля",
+          "count": 89667,
+          "band": "head",
+          "seenFrom": "radar-5"
+        },
+        {
+          "phrase": "вход без логина и пароля войти",
+          "count": 87065,
+          "band": "head",
+          "seenFrom": "radar-5"
+        },
+        {
+          "phrase": "личный кабинет вход без пароля",
+          "count": 80142,
+          "band": "head",
+          "seenFrom": "radar-5"
+        },
+        {
+          "phrase": "личный кабинет телефона без пароля вход",
+          "count": 74333,
+          "band": "head",
+          "seenFrom": "radar-5"
+        }
+      ]
+    },
+    "tool": {
+      "topics": [
+        {
+          "topicId": "tool-1",
+          "number": 1,
+          "title": "Как сделать презентацию с помощью нейросети бесплатно",
+          "status": "утверждено",
+          "frequency": 14745,
+          "band": "sweet_spot",
+          "headPhrase": "презентация нейросеть",
+          "headTotalCount": 159709
+        },
+        {
+          "topicId": "tool-2",
+          "number": 2,
+          "title": "Как превратить готовый текст в презентацию с помощью нейросети",
+          "status": "идея",
+          "frequency": 641,
+          "band": "long_tail",
+          "headPhrase": "презентация по тексту нейросеть",
+          "headTotalCount": 3838
+        },
+        {
+          "topicId": "tool-3",
+          "number": 3,
+          "title": "Как сделать таблицу в Excel с помощью нейросети",
+          "status": "утверждено",
+          "frequency": 2405,
+          "band": "narrow",
+          "headPhrase": "таблица нейросеть",
+          "headTotalCount": 5417
+        },
+        {
+          "topicId": "tool-4",
+          "number": 4,
+          "title": "Как получить от нейросети выводы по таблице с цифрами",
+          "status": "идея",
+          "frequency": 21,
+          "band": "long_tail",
+          "headPhrase": "вывод по таблице нейросеть",
+          "headTotalCount": 26
+        },
+        {
+          "topicId": "tool-5",
+          "number": 5,
+          "title": "Как собрать таблицу с формулами в Excel через нейросеть",
+          "status": "идея",
+          "frequency": 507,
+          "band": "long_tail",
+          "headPhrase": "таблица excel нейросеть",
+          "headTotalCount": 507
+        },
+        {
+          "topicId": "tool-6",
+          "number": 6,
+          "title": "Как проанализировать документ с помощью нейросети",
+          "status": "утверждено",
+          "frequency": 3569,
+          "band": "narrow",
+          "headPhrase": "документы нейросеть",
+          "headTotalCount": 8377
+        },
+        {
+          "topicId": "tool-7",
+          "number": 7,
+          "title": "Как быстро разобрать юридический документ с помощью нейросети",
+          "status": "идея",
+          "frequency": 177,
+          "band": "long_tail",
+          "headPhrase": "юридический документ нейросеть",
+          "headTotalCount": 224
+        },
+        {
+          "topicId": "tool-8",
+          "number": 8,
+          "title": "Как собрать отчёт для руководителя с помощью нейросети",
+          "status": "идея",
+          "frequency": 635,
+          "band": "long_tail",
+          "headPhrase": "отчет нейросеть",
+          "headTotalCount": 1885
+        },
+        {
+          "topicId": "tool-9",
+          "number": 9,
+          "title": "Как работать с нейросетью без VPN и зарубежной карты",
+          "status": "идея",
+          "frequency": 454,
+          "band": "long_tail",
+          "headPhrase": "нейросеть без vpn",
+          "headTotalCount": 454
+        },
+        {
+          "topicId": "tool-10",
+          "number": 10,
+          "title": "Как провести исследование рынка или конкурентов с помощью нейросети",
+          "status": "идея",
+          "frequency": 368,
+          "band": "long_tail",
+          "headPhrase": "исследование нейросеть",
+          "headTotalCount": 1059
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 7,
+        "narrow": 2,
+        "sweet_spot": 1,
+        "head": 0
+      },
+      "topicsWithData": 10,
+      "topicsTotal": 10,
+      "growthGaps": [
+        {
+          "phrase": "нейросеть для презентаций",
+          "count": 84290,
+          "band": "head",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "гамма нейросеть для презентаций",
+          "count": 27989,
+          "band": "head",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "нейросеть для презентаций бесплатно",
+          "count": 17192,
+          "band": "sweet_spot",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "gammas нейросеть для презентаций",
+          "count": 13943,
+          "band": "sweet_spot",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "ии презентации нейросеть",
+          "count": 12594,
+          "band": "sweet_spot",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "нейросеть для создания презентаций",
+          "count": 12137,
+          "band": "sweet_spot",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "презентация с помощью нейросети",
+          "count": 12100,
+          "band": "sweet_spot",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "ии презентации нейросеть бесплатно",
+          "count": 11466,
+          "band": "sweet_spot",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "сделать презентацию нейросеть бесплатно",
+          "count": 10759,
+          "band": "sweet_spot",
+          "seenFrom": "tool-1"
+        },
+        {
+          "phrase": "презентация по тексту нейросеть бесплатно",
+          "count": 2651,
+          "band": "narrow",
+          "seenFrom": "tool-2"
+        },
+        {
+          "phrase": "создать презентацию по тексту нейросеть",
+          "count": 1330,
+          "band": "narrow",
+          "seenFrom": "tool-2"
+        },
+        {
+          "phrase": "создать презентацию по тексту нейросеть бесплатно",
+          "count": 1148,
+          "band": "narrow",
+          "seenFrom": "tool-2"
+        }
+      ]
+    },
+    "type": {
+      "topics": [
+        {
+          "topicId": "type-1",
+          "number": 1,
+          "title": "Как надиктовать деловое письмо вместо того, чтобы печатать",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "надиктовать текст вместо печати",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "type-2",
+          "number": 2,
+          "title": "Как студенту вести конспект лекции голосом",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "надиктовать конспект лекции",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "type-3",
+          "number": 3,
+          "title": "Голосовые комментарии и заметки для разработчика прямо в IDE",
+          "status": "идея",
+          "frequency": 1,
+          "band": "long_tail",
+          "headPhrase": "голосовой ввод в ide",
+          "headTotalCount": 1
+        },
+        {
+          "topicId": "type-4",
+          "number": 4,
+          "title": "Как аналитику надиктовать длинный отчёт быстрее, чем напечатать",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "надиктовать отчет вместо печати",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "type-5",
+          "number": 5,
+          "title": "Приватная диктовка для юриста: почему это остаётся на компьютере",
+          "status": "идея",
+          "frequency": 5,
+          "band": "long_tail",
+          "headPhrase": "голосовой ввод текста офлайн",
+          "headTotalCount": 4
+        },
+        {
+          "topicId": "type-6",
+          "number": 6,
+          "title": "Как копирайтеру надиктовать черновик поста для соцсетей",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "надиктовать текст для поста",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "type-7",
+          "number": 7,
+          "title": "Надиктовка сообщений в мессенджеры быстрее, чем печать с телефона",
+          "status": "идея",
+          "frequency": 67,
+          "band": "long_tail",
+          "headPhrase": "голосовой ввод текста на телефоне",
+          "headTotalCount": 70
+        },
+        {
+          "topicId": "type-8",
+          "number": 8,
+          "title": "Почему говорить в 4 раза быстрее, чем печатать — что показывают исследования",
+          "status": "идея",
+          "frequency": null,
+          "band": null,
+          "headPhrase": "скорость речи против печати",
+          "headTotalCount": null
+        },
+        {
+          "topicId": "type-9",
+          "number": 9,
+          "title": "Настройка горячей клавиши и разрешений на macOS: гайд первого запуска",
+          "status": "идея",
+          "frequency": 4,
+          "band": "long_tail",
+          "headPhrase": "голосовой ввод на mac",
+          "headTotalCount": 6
+        },
+        {
+          "topicId": "type-10",
+          "number": 10,
+          "title": "Как надиктовать текст интервью сразу в чистовик",
+          "status": "идея",
+          "frequency": 19,
+          "band": "long_tail",
+          "headPhrase": "расшифровка интервью в текст",
+          "headTotalCount": 21
+        }
+      ],
+      "bandCounts": {
+        "long_tail": 5,
+        "narrow": 0,
+        "sweet_spot": 0,
+        "head": 0
+      },
+      "topicsWithData": 5,
+      "topicsTotal": 10,
+      "growthGaps": []
+    }
+  }
+}

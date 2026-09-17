@@ -371,9 +371,26 @@ function readFormIntoCurrent() {
   current.body = document.getElementById("f-body").value;
 }
 
+// Арсений сообщил, что фикс с #seo-checks-container не снял проблему на
+// практике (возможно, кэш браузера отдавал старый app.js) — по прямому
+// запросу добавлена пауза: чек-лист пересчитывается через 5с после
+// последней буквы, а не на каждое нажатие. Это не завязано на причину
+// исходного бага (тот фикс остаётся — сам input по-прежнему не
+// пересоздаётся), а работает как независимая подстраховка: даже если
+// где-то ещё раз в секунду что-то дёргает панель, пользователь получает
+// сплошные 5 секунд ввода без вмешательства.
+function debounce(fn, delayMs) {
+  let timer = null;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delayMs);
+  };
+}
+const debouncedRenderSeoChecksList = debounce(renderSeoChecksList, 5000);
+
 function onFieldChange() {
   readFormIntoCurrent();
-  renderSeoChecksList();
+  debouncedRenderSeoChecksList();
 }
 
 function togglePreview() {
@@ -567,7 +584,7 @@ function renderSeoPanel() {
 
   document.getElementById("seo-keyword").addEventListener("input", (e) => {
     seoState.focusKeyword = e.target.value;
-    renderSeoChecksList();
+    debouncedRenderSeoChecksList();
   });
   document.getElementById("gate-brief").addEventListener("change", (e) => { seoState.gateBrief = e.target.checked; });
   document.getElementById("gate-brand").addEventListener("change", (e) => { seoState.gateBrand = e.target.checked; });

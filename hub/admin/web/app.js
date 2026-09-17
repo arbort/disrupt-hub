@@ -829,7 +829,10 @@ function renderRegistry() {
     cell.addEventListener("click", () => openTopicDetail(cell.dataset.topicId));
   }
   for (const btn of document.querySelectorAll(".registry-open-brief")) {
-    btn.addEventListener("click", () => openBriefDetail(btn.dataset.topicId));
+    btn.addEventListener("click", () => {
+      switchTab("briefs");
+      openBriefDetail(btn.dataset.topicId);
+    });
   }
 
   // --- статьи без topicId (не привязаны к бэклогу) ---
@@ -878,8 +881,10 @@ function computeBriefRows() {
   return map;
 }
 
+let currentBriefTopicId = null; // какое ТЗ сейчас открыто в #brief-page — для подсветки строки слева
+
 async function loadBriefs(forceRefresh) {
-  document.getElementById("briefs-table").innerHTML = '<div class="empty-list">Загрузка…</div>';
+  document.getElementById("briefs-list").innerHTML = '<div class="empty-list">Загрузка…</div>';
   if (!articles.length || forceRefresh) {
     const res = await api("?action=list");
     if (res.ok) {
@@ -901,6 +906,10 @@ function briefsFilterSetup() {
   }
 }
 
+// Список слева — тот же article-row, что и во вкладках "Статьи"/"Синдикация"
+// (не таблица-реестр): клик открывает ТЗ полноразмерной страницей справа,
+// а не поп-ап (см. openBriefDetail ниже — по прямому запросу Арсения
+// 2026-09-17, второй проход: "верстка как в статьях", не модалка).
 function renderBriefs() {
   briefsFilterSetup();
   briefRowsByTopicId = computeBriefRows();
@@ -915,35 +924,25 @@ function renderBriefs() {
 
   const draftCount = rows.filter((r) => r.status === "draft").length;
   const approvedCount = rows.filter((r) => r.status === "approved").length;
-  document.getElementById("briefs-summary").innerHTML = `
-    <div class="summary-cards">
-      <div class="summary-card"><div class="summary-card__value">${rows.length}</div><div class="summary-card__label">ТЗ всего</div></div>
-      <div class="summary-card"><div class="summary-card__value">${draftCount}</div><div class="summary-card__label">ждут решения</div></div>
-      <div class="summary-card"><div class="summary-card__value">${approvedCount}</div><div class="summary-card__label">одобрено, ждёт черновика</div></div>
-    </div>
-  `;
+  document.getElementById("briefs-summary").textContent =
+    `${rows.length} ТЗ всего · ${draftCount} ждут решения · ${approvedCount} одобрено`;
 
-  document.getElementById("briefs-table").innerHTML = filtered.length
-    ? `<table class="registry-table">
-        <thead><tr><th>Продукт</th><th>ID темы</th><th>Статус</th><th>Обновлено</th><th></th></tr></thead>
-        <tbody>
-          ${filtered.map((r) => {
-            const product = PRODUCTS.find((p) => p.slug === r.product);
-            const topicTitle = topics ? topics.find((t) => t.topicId === r.topicId)?.title : null;
-            return `<tr>
-              <td>${product ? product.name : r.product}</td>
-              <td class="title-cell brief-detail" data-topic-id="${escapeHtml(r.topicId)}" title="Открыть ТЗ целиком">${escapeHtml(r.topicId)}${topicTitle ? ` — ${escapeHtml(topicTitle)}` : ""}</td>
-              <td><span class="chip ${r.status}">${escapeHtml(r.status)}</span></td>
-              <td class="muted">${r.lastModified ? new Date(r.lastModified).toLocaleString("ru-RU") : "—"}</td>
-              <td><button class="btn btn-sm brief-detail" data-topic-id="${escapeHtml(r.topicId)}">Открыть →</button></td>
-            </tr>`;
-          }).join("")}
-        </tbody>
-      </table>`
-    : '<div class="empty-list">ТЗ пока нет — появятся, когда hub-writer или routine материализуют Stage 2 по утверждённой теме.</div>';
-
-  for (const el of document.querySelectorAll(".brief-detail")) {
-    el.addEventListener("click", () => openBriefDetail(el.dataset.topicId));
+  const listEl = document.getElementById("briefs-list");
+  if (!filtered.length) {
+    listEl.innerHTML = '<div class="empty-list">ТЗ пока нет — появятся, когда hub-writer или routine материализуют Stage 2 по утверждённой теме.</div>';
+    return;
+  }
+  listEl.innerHTML = "";
+  for (const r of filtered) {
+    const product = PRODUCTS.find((p) => p.slug === r.product);
+    const topicTitle = topics ? topics.find((t) => t.topicId === r.topicId)?.title : null;
+    const btn = document.createElement("button");
+    btn.className = "article-row" + (currentBriefTopicId === r.topicId ? " is-active" : "");
+    btn.innerHTML =
+      `<span class="article-row__title">${escapeHtml(topicTitle || r.topicId)}</span>` +
+      `<span class="article-row__meta"><span class="chip ${r.status}">${escapeHtml(r.status)}</span>${product ? product.name : r.product} · ${escapeHtml(r.topicId)}</span>`;
+    btn.addEventListener("click", () => openBriefDetail(r.topicId));
+    listEl.appendChild(btn);
   }
 }
 
@@ -973,6 +972,11 @@ function splitBriefSections(body) {
     .filter((s) => s.title || s.content);
 }
 
+// Рендерит тело ТЗ как полноразмерную страницу — заголовок ТЗ + мета-строки
+// (текст до первого `## `) вводным блоком сверху, каждый раздел `## ...`
+// дальше отдельной секцией на всю ширину с крупным заголовком, друг под
+// другом (не сетка карточек — тут именно "как в статье", один поток сверху
+// вниз, с разделителями между разделами).
 function renderBriefBody(body) {
   const sections = splitBriefSections(body);
   if (!sections.length) return '<div class="modal-note">ТЗ пустое.</div>';
@@ -984,30 +988,17 @@ function renderBriefBody(body) {
     ? `<div class="brief-intro">${window.marked ? marked.parse(intro.content) : escapeHtml(intro.content)}</div>`
     : "";
 
-  const cardsHtml = rest
+  const sectionsHtml = rest
     .map((s) => {
-      const wide = /аутлайн|конкурент/i.test(s.title || "") ? " brief-card--wide" : "";
       const parsed = window.marked ? marked.parse(s.content || "") : `<p>${escapeHtml(s.content || "")}</p>`;
-      return `<div class="brief-card${wide}"><h3 class="brief-card__title">${escapeHtml(s.title || "")}</h3><div class="brief-card__body">${parsed}</div></div>`;
+      return `<section class="brief-section"><h2 class="brief-section__title">${escapeHtml(s.title || "")}</h2><div class="brief-section__body">${parsed}</div></section>`;
     })
     .join("");
 
-  return `${introHtml}<div class="brief-grid">${cardsHtml}</div>`;
+  return `${introHtml}<div class="brief-page">${sectionsHtml}</div>`;
 }
 
-// ---------- модалка ТЗ ----------
-
-const briefDetailModal = document.getElementById("brief-detail-modal");
-const briefDetailContent = document.getElementById("brief-detail-content");
-
-function closeBriefDetail() {
-  briefDetailModal.hidden = true;
-  briefDetailContent.innerHTML = "";
-}
-
-briefDetailModal.addEventListener("click", (e) => {
-  if (e.target === briefDetailModal) closeBriefDetail();
-});
+// ---------- страница ТЗ (открывается в #brief-page, не поп-апом) ----------
 
 async function setBriefStatus(key, raw, status) {
   const { fm, body } = parseFrontmatter(raw);
@@ -1018,22 +1009,23 @@ async function setBriefStatus(key, raw, status) {
     alert(`Не удалось обновить статус ТЗ (${res.status})`);
     return;
   }
-  closeBriefDetail();
   await loadBriefs(true);
+  await openBriefDetail(fm.topicId);
   if (!viewRegistryEl.hidden) renderRegistry();
 }
 
 async function openBriefDetail(topicId) {
   const r = briefRowsByTopicId.get(topicId) || computeBriefRows().get(topicId);
   if (!r) return;
-  briefDetailContent.innerHTML = `<div class="modal-note">Загрузка ТЗ…</div>`;
-  briefDetailModal.hidden = false;
+  currentBriefTopicId = topicId;
+  renderBriefs(); // перерисовать список слева — подсветить активную строку
+
+  const pageEl = document.getElementById("brief-page");
+  pageEl.innerHTML = '<div class="editor__placeholder">Загрузка ТЗ…</div>';
 
   const res = await api(`?action=get&key=${encodeURIComponent(r.key)}`);
   if (!res.ok) {
-    briefDetailContent.innerHTML = `<div class="modal-note">Не удалось загрузить ТЗ (${res.status})</div>
-      <div class="modal-close-row"><button class="btn primary" id="brief-detail-close">Закрыть</button></div>`;
-    document.getElementById("brief-detail-close").addEventListener("click", closeBriefDetail);
+    pageEl.innerHTML = `<div class="editor__placeholder">Не удалось загрузить ТЗ (${res.status})</div>`;
     return;
   }
   const data = await res.json();
@@ -1042,20 +1034,21 @@ async function openBriefDetail(topicId) {
 
   const actionsHtml =
     fm.status === "approved"
-      ? `<button class="btn btn-sm" id="brief-unapprove-btn">Вернуть на доработку</button>`
-      : `<button class="btn btn-sm primary" id="brief-approve-btn">Утвердить ТЗ</button>`;
+      ? `<button class="btn" id="brief-unapprove-btn">Вернуть на доработку</button>`
+      : `<button class="btn primary" id="brief-approve-btn">Утвердить ТЗ</button>`;
 
-  briefDetailContent.innerHTML = `
-    <h2>${escapeHtml(fm.topicId || topicId)}</h2>
-    <div class="modal-subtitle">${product ? product.name : fm.product || ""} · <span class="chip ${fm.status}">${escapeHtml(fm.status || "draft")}</span></div>
-    <div class="modal-note" style="margin:12px 0">Гейт 2 (HUB.md, «Двухступенчатый гейт») — пока статус не «approved», ни hub-writer, ни routine не начинают черновик по этой теме.</div>
-    ${renderBriefBody(body)}
-    <div class="modal-close-row">
-      ${actionsHtml}
-      <button class="btn" id="brief-detail-close">Закрыть</button>
+  pageEl.innerHTML = `
+    <div class="key-preview">ТЗ · ${escapeHtml(fm.topicId || topicId)} · ${r.key}</div>
+    <div class="brief-page__header">
+      <div>
+        <div class="brief-page__product">${product ? product.name : fm.product || ""}</div>
+        <span class="chip ${fm.status}">${escapeHtml(fm.status || "draft")}</span>
+      </div>
+      <div class="btn-row">${actionsHtml}</div>
     </div>
+    <div class="modal-note" style="margin:var(--ui-space-12) 0 var(--ui-space-4)">Гейт 2 (HUB.md, «Двухступенчатый гейт») — пока статус не «approved», ни hub-writer, ни routine не начинают черновик по этой теме.</div>
+    ${renderBriefBody(body)}
   `;
-  document.getElementById("brief-detail-close").addEventListener("click", closeBriefDetail);
   const approveBtn = document.getElementById("brief-approve-btn");
   if (approveBtn) approveBtn.addEventListener("click", () => setBriefStatus(r.key, data.raw, "approved"));
   const unapproveBtn = document.getElementById("brief-unapprove-btn");

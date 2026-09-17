@@ -245,43 +245,53 @@ a { color: var(--accent-blue); }
 .modal-note { font-size: var(--ui-caption-font-size); color: var(--primary-40); margin-top: var(--ui-space-8); }
 .modal-close-row { display: flex; justify-content: flex-end; gap: var(--ui-space-8); margin-top: var(--ui-space-20); }
 
-/* --- модалка ТЗ (Stage 2, Гейт 2 — добавлено 2026-09-17): контент длиннее, чем разбивка частотности --- */
-#brief-detail-content { max-width: 820px; }
+/* --- ТЗ как полноценная страница (2026-09-17, второй проход) ---
+   Раньше ТЗ открывалось попапом-модалкой по центру экрана. Арсений явно
+   попросил вёрстку по образцу вкладки "Статьи": вкладка "ТЗ" — тот же
+   .layout (список слева, полноразмерная страница справа), открытое ТЗ —
+   не поп-ап, а содержимое главной панели, разбитое на секции на всю
+   ширину, с крупными заголовками разделов, а не мелкими карточками в сетке. */
+.layout--briefs { grid-template-columns: 300px 1fr; }
+.sidebar-summary { font-size: var(--ui-caption-font-size); color: var(--primary-50); padding: 0 var(--ui-space-2) var(--ui-space-10); }
 
-/* --- ТЗ разбито по разделам-боксам (2026-09-17, вместо одного длинного
-   markdown-полотна в .preview-box) --- */
-#brief-detail-modal #brief-detail-content { max-width: 1160px; max-height: 88vh; }
-.brief-intro { padding-bottom: var(--ui-space-16); margin-bottom: var(--ui-space-16); border-bottom: 1px solid var(--primary-8); }
-.brief-intro h1 { font-size: var(--ui-title-24-font-size); margin: 0 0 var(--ui-space-8); }
-.brief-intro p { margin: var(--ui-space-4) 0; color: var(--primary-70); }
-.brief-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+.brief-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--ui-space-16);
-  align-items: start;
+  flex-wrap: wrap;
+  padding-bottom: var(--ui-space-16);
+  margin-bottom: var(--ui-space-4);
+  border-bottom: 1px solid var(--primary-8);
 }
-.brief-card {
-  background: var(--elevation-2, var(--primary-4));
-  border: 1px solid var(--primary-8);
-  border-radius: var(--ui-radius-12);
-  padding: var(--ui-space-16);
-  min-width: 0;
+.brief-page__product { font-size: var(--ui-title-20-font-size); font-weight: 700; margin-bottom: var(--ui-space-4); }
+
+.brief-page { max-width: 920px; }
+.brief-intro h1 { font-size: var(--ui-title-24-font-size); margin: var(--ui-space-16) 0 var(--ui-space-8); }
+.brief-intro p { margin: var(--ui-space-4) 0; color: var(--primary-70); font-size: var(--ui-subtitle-font-size); }
+
+.brief-section {
+  padding: var(--ui-space-24) 0;
+  border-bottom: 1px solid var(--primary-8);
 }
-.brief-card--wide { grid-column: 1 / -1; }
-.brief-card__title {
-  font-size: var(--ui-caption-font-size);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: var(--accent-blue);
-  margin: 0 0 var(--ui-space-12);
+.brief-section:last-child { border-bottom: none; padding-bottom: 0; }
+.brief-section__title {
+  font-size: var(--ui-title-20-font-size);
+  font-weight: 700;
+  margin: 0 0 var(--ui-space-14);
+  color: var(--primary);
 }
-.brief-card__body { font-size: var(--ui-subtitle-font-size); overflow-x: auto; }
-.brief-card__body :first-child { margin-top: 0; }
-.brief-card__body :last-child { margin-bottom: 0; }
-.brief-card__body table { border-collapse: collapse; width: 100%; font-size: var(--ui-caption-font-size); }
-.brief-card__body th, .brief-card__body td { border: 1px solid var(--primary-8); padding: var(--ui-space-6) var(--ui-space-8); text-align: left; vertical-align: top; }
-.brief-card__body h3 { font-size: var(--ui-subtitle-font-size); text-transform: none; letter-spacing: normal; color: var(--primary-90); margin: var(--ui-space-16) 0 var(--ui-space-4); }
-.brief-card__body h4 { font-size: var(--ui-subtitle-font-size); margin: var(--ui-space-12) 0 var(--ui-space-4); color: var(--primary-70); }
+.brief-section__body { font-size: var(--ui-body-font-size); color: var(--primary-90); }
+.brief-section__body :first-child { margin-top: 0; }
+.brief-section__body :last-child { margin-bottom: 0; }
+.brief-section__body table { border-collapse: collapse; width: 100%; font-size: var(--ui-subtitle-font-size); margin: var(--ui-space-8) 0; }
+.brief-section__body th, .brief-section__body td { border: 1px solid var(--primary-8); padding: var(--ui-space-8) var(--ui-space-10); text-align: left; vertical-align: top; }
+.brief-section__body th { color: var(--primary-50); font-weight: 500; }
+.brief-section__body h3 { font-size: var(--ui-subtitle-font-size); color: var(--primary); margin: var(--ui-space-20) 0 var(--ui-space-4); }
+.brief-section__body h4 { font-size: var(--ui-subtitle-font-size); margin: var(--ui-space-14) 0 var(--ui-space-4); color: var(--primary-70); }
+.brief-section__body ul, .brief-section__body ol { padding-left: var(--ui-space-20); }
+.brief-section__body li { margin-bottom: var(--ui-space-4); }
+.brief-section__body code { font-family: var(--ui-font-mono); font-size: .9em; background: var(--primary-4); padding: 1px var(--ui-space-4); border-radius: 4px; }
 
 /* --- editor --- */
 .editor {

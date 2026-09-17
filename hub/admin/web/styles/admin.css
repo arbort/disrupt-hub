@@ -202,7 +202,9 @@ a { color: var(--accent-blue); }
 .registry-table th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
 .registry-table th.sortable:hover { color: var(--primary); }
 #registry-table { overflow-x: auto; }
-#registry-table table { min-width: 900px; }
+#registry-table table { min-width: 1040px; }
+.registry-freq-cell { white-space: nowrap; }
+.registry-phrase { font-size: 11px; color: var(--primary-40); font-style: italic; white-space: normal; margin-top: 2px; }
 
 .registry-filters { display: flex; gap: var(--ui-space-8); margin-bottom: var(--ui-space-16); flex-wrap: wrap; }
 .registry-filters select {

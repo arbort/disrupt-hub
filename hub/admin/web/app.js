@@ -694,7 +694,8 @@ function renderRegistry() {
     const freqNum = parseFrequencyNumber(t.frequency);
     const ptraf = freqNum != null ? Math.round(freqNum * PTRAF_FACTOR) : null;
     const score = ptraf != null ? Math.round(ptraf * INTENT_WEIGHT[intent] * FIT_WEIGHT[fit]) : null;
-    return { ...t, article, hasOverride: Boolean(override), baseStatus, effectiveStatus, written, intent, fit, freqNum, ptraf, score };
+    const phrase = (topicFreqDetails && topicFreqDetails[t.topicId] && topicFreqDetails[t.topicId].phrase) || null;
+    return { ...t, article, hasOverride: Boolean(override), baseStatus, effectiveStatus, written, intent, fit, freqNum, ptraf, score, phrase };
   });
   registryRowsById = new Map(rows.map((r) => [r.topicId, r]));
 
@@ -750,6 +751,7 @@ function renderRegistry() {
   if (fitFilter) filtered = filtered.filter((r) => r.fit === fitFilter);
 
   const SORT_KEYS = {
+    rawFrequency: (r) => (r.freqNum == null ? -1 : r.freqNum),
     frequency: (r) => (r.ptraf == null ? -1 : r.ptraf),
     intentWeight: (r) => INTENT_WEIGHT[r.intent],
     fitWeight: (r) => FIT_WEIGHT[r.fit],
@@ -763,6 +765,7 @@ function renderRegistry() {
 
   const statusLabel = (r) => (r.written ? r.effectiveStatus : r.baseStatus);
   const statusChipClass = (r) => (r.written ? r.effectiveStatus : r.baseStatus === "утверждено" ? "approved" : "idea");
+  const rawFreqLabel = (r) => (r.freqNum != null ? r.freqNum.toLocaleString("ru-RU") : "—");
   const freqLabel = (r) => (r.ptraf != null ? r.ptraf.toLocaleString("ru-RU") : "—");
   const scoreLabel = (r) => (r.score != null ? r.score : "—");
 
@@ -773,6 +776,7 @@ function renderRegistry() {
     ? `<table class="registry-table">
         <thead><tr>
           <th>Продукт</th><th>#</th><th>Тема</th><th>Аудитория</th>
+          ${sortableHeader("rawFrequency", "Частотность фразы")}
           ${sortableHeader("frequency", "P/traf-оценка")}
           ${sortableHeader("intentWeight", "Интент")}
           ${sortableHeader("fitWeight", "Соответствие")}
@@ -791,6 +795,7 @@ function renderRegistry() {
               <td>${r.number}</td>
               <td class="title-cell registry-detail" data-topic-id="${escapeHtml(r.topicId)}" title="Кликните, чтобы посмотреть разбивку частотности и P/traf-оценку">${escapeHtml(r.title)}</td>
               <td class="muted">${escapeHtml(r.audience || "")}</td>
+              <td class="muted registry-freq-cell">${escapeHtml(rawFreqLabel(r))}${r.phrase ? `<div class="registry-phrase">«${escapeHtml(r.phrase)}»</div>` : ""}</td>
               <td class="muted">${escapeHtml(freqLabel(r))}</td>
               <td class="muted">${escapeHtml(INTENT_LABELS[r.intent])} ×${INTENT_WEIGHT[r.intent]}</td>
               <td class="muted">${escapeHtml(FIT_LABELS[r.fit])} ×${FIT_WEIGHT[r.fit]}</td>

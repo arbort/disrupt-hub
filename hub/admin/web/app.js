@@ -58,6 +58,14 @@ const SYNDICATION_STATUS_ORDER = ["draft", "ready", "published"];
 // Пока ни одна статья хаба не ранжируется, P/traf текущий = 0 везде, поэтому
 // P/traf-оценка ≈ верхняя граница потенциального трафика, не готовый прогноз.
 const PTRAF_FACTOR = 0.13;
+// Правило Арсения 2026-09-18: темы с измеренной частотностью ниже этого
+// порога никогда не показываются в "Реестре тем" — трафика физически нет,
+// писать статьи под такой спрос бессмысленно (см. HUB.md, "Жёсткие
+// правила"). Темы без данных (`[TBD]`) не отфильтрованы — они ещё не
+// измерены, не дисквалифицированы. "Семантическая карта" эту тему НЕ
+// фильтрует — она диагностический инструмент и должна показывать полную
+// картину бэклога, включая длинный хвост, а не прятать масштаб проблемы.
+const MIN_TOPIC_FREQUENCY = 500;
 const INTENT_LABELS = { commercial: "коммерческое", brand: "брендовое", navigational: "навигационное", informational: "информационное" };
 const INTENT_WEIGHT = { commercial: 1.0, brand: 0.6, navigational: 0.4, informational: 0.35 };
 const FIT_LABELS = { anchor: "якорная", peripheral: "периферийная" };
@@ -727,7 +735,7 @@ function renderRegistry() {
     else orphanArticles.push(item);
   }
 
-  const rows = topics.map((t) => {
+  const rowsAll = topics.map((t) => {
     const article = articleByTopicId.get(t.topicId);
     const override = overrideByTopicId.get(t.topicId);
     const baseStatus = override || t.status; // оверрайд перекрывает статус из бэклог-файла
@@ -741,6 +749,11 @@ function renderRegistry() {
     const phrase = (topicFreqDetails && topicFreqDetails[t.topicId] && topicFreqDetails[t.topicId].phrase) || null;
     return { ...t, article, hasOverride: Boolean(override), baseStatus, effectiveStatus, written, intent, fit, freqNum, ptraf, score, phrase };
   });
+  // Правило 2026-09-18: темы с измеренной частотностью < MIN_TOPIC_FREQUENCY
+  // не показываются в реестре вообще — ни в таблице, ни в сводке по
+  // продуктам. Темы без данных (freqNum === null, `[TBD]`) остаются видимы.
+  const hiddenLowVolumeCount = rowsAll.filter((r) => r.freqNum != null && r.freqNum < MIN_TOPIC_FREQUENCY).length;
+  const rows = rowsAll.filter((r) => r.freqNum == null || r.freqNum >= MIN_TOPIC_FREQUENCY);
   registryRowsById = new Map(rows.map((r) => [r.topicId, r]));
 
   // --- сводка ---
@@ -776,6 +789,7 @@ function renderRegistry() {
         }).join("")}
       </tbody>
     </table>
+    ${hiddenLowVolumeCount ? `<div class="modal-note" style="margin-top:var(--ui-space-8)">Скрыто правилом «частотность &lt; ${MIN_TOPIC_FREQUENCY}» — ${hiddenLowVolumeCount} тем (см. HUB.md, «Жёсткие правила»). Не удалены из бэклога, только не показываются в реестре.</div>` : ""}
   `;
 
   // --- таблица тем ---
@@ -1443,9 +1457,38 @@ function semmapBarRow(label, count, band, maxLog, meta) {
     </div>`;
 }
 
+// "Подтверждено рекламой" (добавлено 2026-09-18 вечером) — реальные
+// ad-группы Яндекс.Директа (Disrupt-15-09.xlsx), не оценка по Wordstat.
+// Цвет строки — что с ней делать: зелёный (реальная конверсия, нет темы в
+// SEO) — прямой кандидат в бэклог; синий (уже есть тема) — сверка пройдена;
+// серый (имя бренда-конкурента, определено по заглавной букве в названии
+// группы) — не тема для контента, целевая реклама на чужой бренд.
+function semmapAdRow(g, maxLog) {
+  const width = semmapBarWidth(g.conversions, maxLog);
+  let color, status;
+  if (g.isBrandCompetitor) {
+    color = "var(--primary-40)";
+    status = "бренд конкурента — не тема для контента";
+  } else if (g.coveredBySeo) {
+    color = "var(--accent-blue)";
+    status = "есть тема в SEO-бэклоге";
+  } else {
+    color = "var(--accent-green)";
+    status = "нет темы в SEO — прямой кандидат";
+  }
+  const meta = `CR ${g.cr}% · показов ${g.impressions.toLocaleString("ru-RU")} · ${status}`;
+  return `
+    <div class="semmap-row">
+      <div class="semmap-row__label" title="${escapeHtml(g.group)}">${escapeHtml(g.group)}</div>
+      <div class="semmap-row__track"><div class="semmap-row__fill" style="width:${width}%;background:${color}"></div></div>
+      <div class="semmap-row__count">${g.conversions.toLocaleString("ru-RU")} конв</div>
+      <div class="semmap-row__meta">${escapeHtml(meta)}</div>
+    </div>`;
+}
+
 function renderSemanticMap() {
   if (!semanticMap) return;
-  const { bands, agencyBenchmark, products } = semanticMap;
+  const { bands, agencyBenchmark, products, adPerformanceNote } = semanticMap;
 
   // --- сводка сверху: почему такие полосы и как мы выглядим на их фоне ---
   const ourCounts = { long_tail: 0, narrow: 0, sweet_spot: 0, head: 0 };
@@ -1471,10 +1514,14 @@ function renderSemanticMap() {
         const allF = Object.values(products).flatMap((p) => p.topics.map((t) => t.frequency).filter((f) => f != null)).sort((a, b) => a - b);
         return allF.length ? allF[Math.floor(allF.length / 2)].toLocaleString("ru-RU") : "—";
       })()},
-      бо́льшая часть тем — длинный хвост. Ниже — по каждому продукту: где сейчас стоит
-      бэклог и какие уже найденные, но не занятые фразы приличного объёма стоит
-      рассмотреть под новые темы («Зоны роста»).
+      бо́льшая часть тем — длинный хвост.
+      <strong>Найти середину</strong> — это не только полосы Wordstat: там, где
+      есть реальная реклама, сильнее любой оценки объёма — доказанный конверсией
+      спрос нашей же аудитории (раздел «Подтверждено рекламой» по каждому
+      продукту). Там, где рекламных данных ещё нет — полосы Wordstat и
+      «Зоны роста» (уже найденные, но не занятые фразы приличного объёма).
     </p>
+    ${adPerformanceNote ? `<p class="modal-note" style="max-width:820px">${escapeHtml(adPerformanceNote)}</p>` : ""}
     <div class="semmap-compare">
       ${bands.map((b) => `
         <div class="semmap-compare__row">
@@ -1491,11 +1538,14 @@ function renderSemanticMap() {
 
   // --- по продукту ---
   const allCounts = [];
+  const allConversions = [];
   for (const p of Object.values(products)) {
     for (const t of p.topics) if (t.frequency != null) allCounts.push(t.frequency);
     for (const g of p.growthGaps) allCounts.push(g.count);
+    for (const g of p.adPerformance || []) allConversions.push(g.conversions);
   }
   const maxLog = Math.max(1, Math.log10(Math.max(1, ...allCounts) + 1));
+  const maxLogAds = Math.max(1, Math.log10(Math.max(1, ...allConversions) + 1));
 
   const productsHtml = PRODUCTS.filter((prod) => products[prod.slug]).map((prod) => {
     const p = products[prod.slug];
@@ -1509,10 +1559,19 @@ function renderSemanticMap() {
 
     const gapsHtml = p.growthGaps.length
       ? `<div class="semmap-section semmap-section--gaps">
-          <h4>Зоны роста — не проверено вручную, может быть шум/бренд конкурента</h4>
+          <h4>Зоны роста (Wordstat) — не проверено вручную, может быть шум/бренд конкурента</h4>
           ${p.growthGaps.map((g) => semmapBarRow(g.phrase, g.count, g.band, maxLog, `увидено в similar у ${g.seenFrom}`)).join("")}
         </div>`
       : `<div class="semmap-section semmap-section--gaps"><div class="empty-list">Зон роста не найдено (нет собранной разбивки Wordstat для тем этого продукта)</div></div>`;
+
+    const ads = p.adPerformance || [];
+    const adsUncovered = ads.filter((g) => !g.coveredBySeo && !g.isBrandCompetitor).length;
+    const adsHtml = ads.length
+      ? `<div class="semmap-section semmap-section--ads">
+          <h4>Подтверждено рекламой — реальные конверсии, не оценка (${adsUncovered} из ${ads.length} без темы в SEO)</h4>
+          ${ads.map((g) => semmapAdRow(g, maxLogAds)).join("")}
+        </div>`
+      : "";
 
     return `
       <div class="semmap-product">
@@ -1520,8 +1579,9 @@ function renderSemanticMap() {
           <h3>${prod.name}</h3>
           <div class="semmap-band-chips">${chips}</div>
         </div>
+        ${adsHtml}
         <div class="semmap-section">
-          <h4>Темы бэклога по объёму спроса</h4>
+          <h4>Темы бэклога по объёму спроса (Wordstat)</h4>
           ${topicsHtml || '<div class="empty-list">Нет тем с данными</div>'}
         </div>
         ${gapsHtml}

@@ -445,6 +445,14 @@ textarea.body-editor {
 }
 .semmap-section--gaps { margin-top: var(--ui-space-20); }
 .semmap-section--gaps h4 { color: var(--accent-green); }
+.semmap-section--ads {
+  margin-bottom: var(--ui-space-20);
+  padding: var(--ui-space-12) var(--ui-space-14);
+  background: color-mix(in srgb, var(--accent-blue) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-blue) 20%, transparent);
+  border-radius: var(--ui-radius-12);
+}
+.semmap-section--ads h4 { color: var(--accent-blue); margin-top: 0; }
 
 .semmap-row {
   display: grid;

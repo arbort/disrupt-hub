@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-17T21:19:19.349266+00:00",
+  "generatedAt": "2026-09-17T21:54:23.637007+00:00",
   "bands": [
     {
       "id": "long_tail",
@@ -37,6 +37,8 @@
       "head": 44.2
     }
   },
+  "minTopicFrequency": 500,
+  "adPerformanceNote": "Источник — Disrupt-15-09.xlsx, данные по 13.09. Консьерж и Ника не включены: у Консьержа сумма конверсий по листу равна 0 (нет усвояемого сигнала на уровне ключей на эту дату), Ника не входит в ростер хаба (продукт приостановлен, см. HUB.md).",
   "products": {
     "aiwa": {
       "topics": [
@@ -149,7 +151,189 @@
       },
       "topicsWithData": 9,
       "topicsTotal": 10,
-      "growthGaps": []
+      "growthGaps": [],
+      "adPerformance": [
+        {
+          "group": "отследить цикл",
+          "spend": 202354,
+          "impressions": 6530314,
+          "clicks": 58076,
+          "ctr": 0.89,
+          "conversions": 959,
+          "cr": 1.65,
+          "cpa": 211.0,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "Clover",
+          "spend": 99987,
+          "impressions": 1994021,
+          "clicks": 21173,
+          "ctr": 1.06,
+          "conversions": 608,
+          "cr": 2.87,
+          "cpa": 164.5,
+          "isBrandCompetitor": true,
+          "coveredBySeo": false
+        },
+        {
+          "group": "ии здоровье",
+          "spend": 75190,
+          "impressions": 829897,
+          "clicks": 13699,
+          "ctr": 1.65,
+          "conversions": 517,
+          "cr": 3.77,
+          "cpa": 145.4,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "Clue",
+          "spend": 98934,
+          "impressions": 3109116,
+          "clicks": 27414,
+          "ctr": 0.88,
+          "conversions": 420,
+          "cr": 1.53,
+          "cpa": 235.6,
+          "isBrandCompetitor": true,
+          "coveredBySeo": false
+        },
+        {
+          "group": "дата менструации",
+          "spend": 60217,
+          "impressions": 1199960,
+          "clicks": 15210,
+          "ctr": 1.27,
+          "conversions": 412,
+          "cr": 2.71,
+          "cpa": 146.2,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "план тренировок",
+          "spend": 78112,
+          "impressions": 3340692,
+          "clicks": 29977,
+          "ctr": 0.9,
+          "conversions": 370,
+          "cr": 1.23,
+          "cpa": 211.1,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "ai врач",
+          "spend": 47698,
+          "impressions": 1522680,
+          "clicks": 15356,
+          "ctr": 1.01,
+          "conversions": 296,
+          "cr": 1.93,
+          "cpa": 161.1,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "Clatch",
+          "spend": 48084,
+          "impressions": 2832424,
+          "clicks": 19846,
+          "ctr": 0.7,
+          "conversions": 247,
+          "cr": 1.24,
+          "cpa": 194.7,
+          "isBrandCompetitor": true,
+          "coveredBySeo": false
+        },
+        {
+          "group": "ии для тренировок",
+          "spend": 48180,
+          "impressions": 2173156,
+          "clicks": 17015,
+          "ctr": 0.78,
+          "conversions": 247,
+          "cr": 1.45,
+          "cpa": 195.1,
+          "isBrandCompetitor": false,
+          "coveredBySeo": true
+        },
+        {
+          "group": "ии питание",
+          "spend": 25825,
+          "impressions": 1575810,
+          "clicks": 8944,
+          "ctr": 0.57,
+          "conversions": 65,
+          "cr": 0.73,
+          "cpa": 397.3,
+          "isBrandCompetitor": false,
+          "coveredBySeo": true
+        },
+        {
+          "group": "план питания",
+          "spend": 10471,
+          "impressions": 811860,
+          "clicks": 4590,
+          "ctr": 0.57,
+          "conversions": 55,
+          "cr": 1.2,
+          "cpa": 190.4,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "подсчет калорий",
+          "spend": 9539,
+          "impressions": 732374,
+          "clicks": 3779,
+          "ctr": 0.52,
+          "conversions": 44,
+          "cr": 1.16,
+          "cpa": 216.8,
+          "isBrandCompetitor": false,
+          "coveredBySeo": true
+        },
+        {
+          "group": "ии составление рациона",
+          "spend": 10964,
+          "impressions": 451922,
+          "clicks": 3115,
+          "ctr": 0.69,
+          "conversions": 30,
+          "cr": 0.96,
+          "cpa": 365.5,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "Lifesum",
+          "spend": 5493,
+          "impressions": 232675,
+          "clicks": 1771,
+          "ctr": 0.76,
+          "conversions": 27,
+          "cr": 1.52,
+          "cpa": 203.4,
+          "isBrandCompetitor": true,
+          "coveredBySeo": false
+        },
+        {
+          "group": "Flo",
+          "spend": 5708,
+          "impressions": 174187,
+          "clicks": 1865,
+          "ctr": 1.07,
+          "conversions": 26,
+          "cr": 1.39,
+          "cpa": 219.5,
+          "isBrandCompetitor": true,
+          "coveredBySeo": false
+        }
+      ]
     },
     "concierge": {
       "topics": [
@@ -281,7 +465,8 @@
           "band": "narrow",
           "seenFrom": "concierge-7"
         }
-      ]
+      ],
+      "adPerformance": []
     },
     "gochi": {
       "topics": [
@@ -394,7 +579,8 @@
       },
       "topicsWithData": 7,
       "topicsTotal": 10,
-      "growthGaps": []
+      "growthGaps": [],
+      "adPerformance": []
     },
     "korche": {
       "topics": [
@@ -562,7 +748,8 @@
           "band": "narrow",
           "seenFrom": "korche-7"
         }
-      ]
+      ],
+      "adPerformance": []
     },
     "memento": {
       "topics": [
@@ -675,7 +862,8 @@
       },
       "topicsWithData": 4,
       "topicsTotal": 10,
-      "growthGaps": []
+      "growthGaps": [],
+      "adPerformance": []
     },
     "narra": {
       "topics": [
@@ -788,7 +976,8 @@
       },
       "topicsWithData": 9,
       "topicsTotal": 10,
-      "growthGaps": []
+      "growthGaps": [],
+      "adPerformance": []
     },
     "radar": {
       "topics": [
@@ -956,7 +1145,8 @@
           "band": "head",
           "seenFrom": "radar-5"
         }
-      ]
+      ],
+      "adPerformance": []
     },
     "tool": {
       "topics": [
@@ -1142,6 +1332,188 @@
           "band": "narrow",
           "seenFrom": "tool-2"
         }
+      ],
+      "adPerformance": [
+        {
+          "group": "улучшить текст",
+          "spend": 385471,
+          "impressions": 188754,
+          "clicks": 15396,
+          "ctr": 8.16,
+          "conversions": 3036,
+          "cr": 19.72,
+          "cpa": 127.0,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "ии для презентаций",
+          "spend": 183835,
+          "impressions": 51032,
+          "clicks": 7205,
+          "ctr": 14.12,
+          "conversions": 1256,
+          "cr": 17.43,
+          "cpa": 146.4,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "проверить текст на ошибки",
+          "spend": 99013,
+          "impressions": 42587,
+          "clicks": 3798,
+          "ctr": 8.92,
+          "conversions": 737,
+          "cr": 19.4,
+          "cpa": 134.3,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "ии на компьютере / без облака",
+          "spend": 102103,
+          "impressions": 71619,
+          "clicks": 3183,
+          "ctr": 4.44,
+          "conversions": 651,
+          "cr": 20.45,
+          "cpa": 156.8,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "презентация",
+          "spend": 143256,
+          "impressions": 32967,
+          "clicks": 3546,
+          "ctr": 10.76,
+          "conversions": 569,
+          "cr": 16.05,
+          "cpa": 251.8,
+          "isBrandCompetitor": false,
+          "coveredBySeo": true
+        },
+        {
+          "group": "нейросеть для учебы",
+          "spend": 49438,
+          "impressions": 18985,
+          "clicks": 2272,
+          "ctr": 11.97,
+          "conversions": 467,
+          "cr": 20.55,
+          "cpa": 105.9,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "скачать ии на компьютер",
+          "spend": 64531,
+          "impressions": 36791,
+          "clicks": 2223,
+          "ctr": 6.04,
+          "conversions": 444,
+          "cr": 19.97,
+          "cpa": 145.3,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "ии для таблиц",
+          "spend": 50891,
+          "impressions": 25752,
+          "clicks": 2357,
+          "ctr": 9.15,
+          "conversions": 354,
+          "cr": 15.02,
+          "cpa": 143.8,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "код",
+          "spend": 24213,
+          "impressions": 5088,
+          "clicks": 629,
+          "ctr": 12.36,
+          "conversions": 194,
+          "cr": 30.84,
+          "cpa": 124.8,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "ии для работы",
+          "spend": 24327,
+          "impressions": 11903,
+          "clicks": 820,
+          "ctr": 6.89,
+          "conversions": 174,
+          "cr": 21.22,
+          "cpa": 139.8,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "таблицы",
+          "spend": 22714,
+          "impressions": 12609,
+          "clicks": 666,
+          "ctr": 5.28,
+          "conversions": 88,
+          "cr": 13.21,
+          "cpa": 258.1,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "документ",
+          "spend": 1932,
+          "impressions": 615,
+          "clicks": 62,
+          "ctr": 10.08,
+          "conversions": 20,
+          "cr": 32.26,
+          "cpa": 96.6,
+          "isBrandCompetitor": false,
+          "coveredBySeo": true
+        },
+        {
+          "group": "повысить уникальность текста",
+          "spend": 1234,
+          "impressions": 153,
+          "clicks": 38,
+          "ctr": 24.84,
+          "conversions": 19,
+          "cr": 50.0,
+          "cpa": 64.9,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "нейросеть экзамен",
+          "spend": 3475,
+          "impressions": 1503,
+          "clicks": 102,
+          "ctr": 6.79,
+          "conversions": 18,
+          "cr": 17.65,
+          "cpa": 193.0,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "анализ данных",
+          "spend": 4145,
+          "impressions": 1050,
+          "clicks": 129,
+          "ctr": 12.29,
+          "conversions": 17,
+          "cr": 13.18,
+          "cpa": 243.8,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        }
       ]
     },
     "type": {
@@ -1255,7 +1627,165 @@
       },
       "topicsWithData": 5,
       "topicsTotal": 10,
-      "growthGaps": []
+      "growthGaps": [],
+      "adPerformance": [
+        {
+          "group": "голос в текст с ии",
+          "spend": 145386,
+          "impressions": 29492,
+          "clicks": 5557,
+          "ctr": 18.84,
+          "conversions": 886,
+          "cr": 15.94,
+          "cpa": 164.1,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "прямые конкуренты категории",
+          "spend": 84171,
+          "impressions": 35127,
+          "clicks": 4233,
+          "ctr": 12.05,
+          "conversions": 511,
+          "cr": 12.07,
+          "cpa": 164.7,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "скачать приложение ии",
+          "spend": 102009,
+          "impressions": 34670,
+          "clicks": 3474,
+          "ctr": 10.02,
+          "conversions": 496,
+          "cr": 14.28,
+          "cpa": 205.7,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "распознавание речи",
+          "spend": 74960,
+          "impressions": 20046,
+          "clicks": 2875,
+          "ctr": 14.34,
+          "conversions": 421,
+          "cr": 14.64,
+          "cpa": 178.1,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "нейросеть без интернета",
+          "spend": 77499,
+          "impressions": 15122,
+          "clicks": 2220,
+          "ctr": 14.68,
+          "conversions": 403,
+          "cr": 18.15,
+          "cpa": 192.3,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "диктовка",
+          "spend": 56584,
+          "impressions": 26689,
+          "clicks": 3102,
+          "ctr": 11.62,
+          "conversions": 285,
+          "cr": 9.19,
+          "cpa": 198.5,
+          "isBrandCompetitor": false,
+          "coveredBySeo": true
+        },
+        {
+          "group": "голосовой ввод текста",
+          "spend": 50815,
+          "impressions": 16254,
+          "clicks": 1974,
+          "ctr": 12.14,
+          "conversions": 269,
+          "cr": 13.63,
+          "cpa": 188.9,
+          "isBrandCompetitor": false,
+          "coveredBySeo": true
+        },
+        {
+          "group": "конспект",
+          "spend": 36890,
+          "impressions": 9551,
+          "clicks": 1281,
+          "ctr": 13.41,
+          "conversions": 257,
+          "cr": 20.06,
+          "cpa": 143.5,
+          "isBrandCompetitor": false,
+          "coveredBySeo": true
+        },
+        {
+          "group": "заметки голосом",
+          "spend": 35933,
+          "impressions": 15549,
+          "clicks": 1833,
+          "ctr": 11.79,
+          "conversions": 247,
+          "cr": 13.48,
+          "cpa": 145.5,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "скачать нейросеть",
+          "spend": 56963,
+          "impressions": 19227,
+          "clicks": 1790,
+          "ctr": 9.31,
+          "conversions": 240,
+          "cr": 13.41,
+          "cpa": 237.3,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "ии распознавание речи",
+          "spend": 34336,
+          "impressions": 9598,
+          "clicks": 1449,
+          "ctr": 15.1,
+          "conversions": 222,
+          "cr": 15.32,
+          "cpa": 154.7,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "голос в текст",
+          "spend": 15238,
+          "impressions": 6943,
+          "clicks": 665,
+          "ctr": 9.58,
+          "conversions": 92,
+          "cr": 13.83,
+          "cpa": 165.6,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        },
+        {
+          "group": "win+h / apple dictation",
+          "spend": 1378,
+          "impressions": 757,
+          "clicks": 57,
+          "ctr": 7.53,
+          "conversions": 7,
+          "cr": 12.28,
+          "cpa": 196.8,
+          "isBrandCompetitor": false,
+          "coveredBySeo": false
+        }
+      ]
     }
   }
 }

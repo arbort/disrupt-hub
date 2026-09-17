@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-17T16:56:24.015Z",
+  "generatedAt": "2026-09-17T17:08:36.128Z",
   "topics": [
     {
       "topicId": "aiwa-1",
@@ -874,7 +874,7 @@
       "feature": "сценарий «соберёт таблицу»",
       "audience": "аналитики, менеджеры",
       "frequency": "2405",
-      "status": "идея",
+      "status": "утверждено",
       "productFit": "anchor"
     },
     {
@@ -910,7 +910,7 @@
       "feature": "анализ документов",
       "audience": "широкая офисная аудитория",
       "frequency": "3569",
-      "status": "идея",
+      "status": "утверждено",
       "productFit": "peripheral"
     },
     {

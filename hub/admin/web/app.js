@@ -40,6 +40,12 @@ const isBrief = (item) => item.key.startsWith(BRIEF_PREFIX);
 // 70/20/10 по продуктам сюда не входит намеренно: это фильтр ОЧЕРЁДности
 // продвижения (какой продукт продвигать активнее), а не часть оценки темы —
 // тема оценивается объективно вне зависимости от того, чей это продукт.
+// P/traf-оценка (HUB.md, "Семантика вперёд тем", добавлено 2026-09-17):
+// широкая частотность × 0.13 — эмпирическая пропорция, замеченная в реальном
+// файле P/traf giga.chat (внешний ориентир, не откалиброванный нами факт).
+// Пока ни одна статья хаба не ранжируется, P/traf текущий = 0 везде, поэтому
+// P/traf-оценка ≈ верхняя граница потенциального трафика, не готовый прогноз.
+const PTRAF_FACTOR = 0.13;
 const INTENT_LABELS = { commercial: "коммерческое", brand: "брендовое", navigational: "навигационное", informational: "информационное" };
 const INTENT_WEIGHT = { commercial: 1.0, brand: 0.6, navigational: 0.4, informational: 0.35 };
 const FIT_LABELS = { anchor: "якорная", peripheral: "периферийная" };
@@ -670,8 +676,9 @@ function renderRegistry() {
     const intent = deriveIntent(t.cluster);
     const fit = t.productFit || "peripheral";
     const freqNum = parseFrequencyNumber(t.frequency);
-    const score = freqNum != null ? Math.round(freqNum * INTENT_WEIGHT[intent] * FIT_WEIGHT[fit]) : null;
-    return { ...t, article, hasOverride: Boolean(override), baseStatus, effectiveStatus, written, intent, fit, freqNum, score };
+    const ptraf = freqNum != null ? Math.round(freqNum * PTRAF_FACTOR) : null;
+    const score = ptraf != null ? Math.round(ptraf * INTENT_WEIGHT[intent] * FIT_WEIGHT[fit]) : null;
+    return { ...t, article, hasOverride: Boolean(override), baseStatus, effectiveStatus, written, intent, fit, freqNum, ptraf, score };
   });
   registryRowsById = new Map(rows.map((r) => [r.topicId, r]));
 
@@ -725,7 +732,7 @@ function renderRegistry() {
   if (fitFilter) filtered = filtered.filter((r) => r.fit === fitFilter);
 
   const SORT_KEYS = {
-    frequency: (r) => (r.freqNum == null ? -1 : r.freqNum),
+    frequency: (r) => (r.ptraf == null ? -1 : r.ptraf),
     intentWeight: (r) => INTENT_WEIGHT[r.intent],
     fitWeight: (r) => FIT_WEIGHT[r.fit],
     score: (r) => (r.score == null ? -1 : r.score),
@@ -738,7 +745,7 @@ function renderRegistry() {
 
   const statusLabel = (r) => (r.written ? r.effectiveStatus : r.baseStatus);
   const statusChipClass = (r) => (r.written ? r.effectiveStatus : r.baseStatus === "утверждено" ? "approved" : "idea");
-  const freqLabel = (r) => (r.freqNum != null ? r.frequency : "—");
+  const freqLabel = (r) => (r.ptraf != null ? r.ptraf.toLocaleString("ru-RU") : "—");
   const scoreLabel = (r) => (r.score != null ? r.score : "—");
 
   const sortIndicator = (key) => (registrySort.key === key ? (registrySort.dir === "asc" ? " ▲" : " ▼") : "");
@@ -748,7 +755,7 @@ function renderRegistry() {
     ? `<table class="registry-table">
         <thead><tr>
           <th>Продукт</th><th>#</th><th>Тема</th><th>Аудитория</th>
-          ${sortableHeader("frequency", "Широкая частотность")}
+          ${sortableHeader("frequency", "P/traf-оценка")}
           ${sortableHeader("intentWeight", "Интент")}
           ${sortableHeader("fitWeight", "Соответствие")}
           ${sortableHeader("score", "Балл")}
@@ -764,7 +771,7 @@ function renderRegistry() {
             return `<tr>
               <td>${product ? product.name : r.product}</td>
               <td>${r.number}</td>
-              <td class="title-cell registry-detail" data-topic-id="${escapeHtml(r.topicId)}" title="Кликните, чтобы посмотреть разбивку частотности">${escapeHtml(r.title)}</td>
+              <td class="title-cell registry-detail" data-topic-id="${escapeHtml(r.topicId)}" title="Кликните, чтобы посмотреть разбивку частотности и P/traf-оценку">${escapeHtml(r.title)}</td>
               <td class="muted">${escapeHtml(r.audience || "")}</td>
               <td class="muted">${escapeHtml(freqLabel(r))}</td>
               <td class="muted">${escapeHtml(INTENT_LABELS[r.intent])} ×${INTENT_WEIGHT[r.intent]}</td>
@@ -997,15 +1004,21 @@ function openTopicDetail(topicId) {
       ? `<div class="modal-note" style="color:var(--accent-orange)">⚠ При последнем снятии разбивки Wordstat вернул другое число для той же фразы — ${details.totalCount.toLocaleString("ru-RU")} вместо ${registryNumber.toLocaleString("ru-RU")} в реестре. Это известная нестабильность самого API между вызовами (замечено примерно в четверти случаев при сверке), не ошибка расчёта. Число в реестре не трогаем без явного пересчёта — ниже показана разбивка именно из последнего снятия.</div>`
       : "";
 
+  const ptrafLine = r.ptraf != null
+    ? `<div class="modal-card__row"><span>P/traf-оценка (× ${PTRAF_FACTOR}, идёт в «Балл»)</span><span>${r.ptraf.toLocaleString("ru-RU")}</span></div>`
+    : "";
+
   const body = !details
     ? `
       <div class="modal-headline">${registryNumber != null ? registryNumber.toLocaleString("ru-RU") : "—"}</div>
+      ${ptrafLine}
       <div class="modal-note">${registryNumber != null ? "Число в реестре есть, но разбивка на похожие/смежные запросы по нему ещё не снята (снята позже, отдельным прогоном) — " : "Частотность по этой теме ещё не снята — "}запустите <code>admin/scripts/apply-topic-frequency.py</code> и передеплойте админку, чтобы получить разбивку.</div>
     `
     : `
       <div class="modal-card__row"><span>Поисковая фраза</span><span>«${escapeHtml(details.phrase)}»</span></div>
       <div class="modal-headline">${registryNumber != null ? registryNumber.toLocaleString("ru-RU") : "—"}</div>
-      <div class="modal-note">Широкая частотность — верхняя граница спроса по фразе целиком (Wordstat, без операторов, включает словоформы и порядок слов). Не прогноз показов.</div>
+      ${ptrafLine}
+      <div class="modal-note">Широкая частотность — верхняя граница спроса по фразе целиком (Wordstat, без операторов, включает словоформы и порядок слов). Не прогноз показов. P/traf-оценка — прикидка трафика на её основе (см. HUB.md, «Семантика вперёд тем»), пока P/traf текущий = 0 везде (сайт без истории ранжирования).</div>
       ${driftWarning}
 
       <h3>Из каких запросов складывается это число</h3>

@@ -25,6 +25,13 @@ const PRODUCTS = [
 const TOPIC_OVERRIDE_PREFIX = "_topics/";
 const isTopicOverride = (item) => item.key.startsWith(TOPIC_OVERRIDE_PREFIX);
 
+// ТЗ (Stage 2, Гейт 2 — HUB.md "Двухступенчатый гейт", добавлено 2026-09-17)
+// хранятся тем же приёмом: крошечные .md-объекты под отдельным префиксом в
+// том же бакете, проходят ту же валидацию PUT (key.endsWith(".md")), без
+// единой правки Cloud Function. Ключ — _briefs/<product>/<topicId>.md.
+const BRIEF_PREFIX = "_briefs/";
+const isBrief = (item) => item.key.startsWith(BRIEF_PREFIX);
+
 // ---------- SEO-приоритет тем (добавлено 2026-09-13) ----------
 // Интегральный балл = частотность (Wordstat) × вес интента × вес продуктового
 // соответствия. Веса — не измерены (нет данных о CTR/конверсии на сайте,
@@ -199,7 +206,7 @@ async function loadArticles() {
 }
 
 function renderArticleList() {
-  const realArticles = articles.filter((item) => !isTopicOverride(item));
+  const realArticles = articles.filter((item) => !isTopicOverride(item) && !isBrief(item));
   articleCountEl.textContent = `${realArticles.length} шт.`;
   if (!realArticles.length) {
     articleListEl.innerHTML = '<div class="empty-list">Статей в бакете пока нет</div>';
@@ -533,19 +540,24 @@ function renderSeoPanel() {
 
 const viewArticlesEl = document.getElementById("view-articles");
 const viewRegistryEl = document.getElementById("view-registry");
+const viewBriefsEl = document.getElementById("view-briefs");
 let topics = null; // кэш data/topics.json, грузится один раз за сессию
 let topicFreqDetails = null; // кэш data/topic-frequency-details.json — разбивка по похожим/смежным запросам
 let registrySort = { key: null, dir: "desc" }; // сортировка таблицы реестра по клику на заголовок колонки
 let registryRowsById = new Map(); // последний рендер реестра — для модалки деталей по клику
+let briefRowsByTopicId = new Map(); // последний рендер вкладки "ТЗ" — для модалки и для ссылки "ТЗ →" из реестра тем
 
 document.getElementById("tab-articles").addEventListener("click", () => switchTab("articles"));
 document.getElementById("tab-registry").addEventListener("click", () => switchTab("registry"));
+document.getElementById("tab-briefs").addEventListener("click", () => switchTab("briefs"));
 
 function switchTab(name) {
   for (const btn of document.querySelectorAll(".tab")) btn.classList.toggle("is-active", btn.dataset.tab === name);
   viewArticlesEl.hidden = name !== "articles";
   viewRegistryEl.hidden = name !== "registry";
+  viewBriefsEl.hidden = name !== "briefs";
   if (name === "registry") loadRegistry();
+  if (name === "briefs") loadBriefs();
 }
 
 // ---------- registry (реестр тем) ----------
@@ -627,6 +639,7 @@ function registryActionCell(r) {
 
 function renderRegistry() {
   registryFilterSetup();
+  briefRowsByTopicId = computeBriefRows();
   const productFilter = document.getElementById("registry-filter-product").value;
   const statusFilter = document.getElementById("registry-filter-status").value;
 
@@ -636,9 +649,11 @@ function renderRegistry() {
   const overrideByTopicId = new Map();
   const orphanArticles = [];
   for (const item of articles) {
-    if (isTopicOverride(item)) {
-      const tid = item.frontmatter.topicId || item.key.slice(TOPIC_OVERRIDE_PREFIX.length).replace(/\.md$/, "");
-      overrideByTopicId.set(tid, item.frontmatter.status);
+    if (isTopicOverride(item) || isBrief(item)) {
+      if (isTopicOverride(item)) {
+        const tid = item.frontmatter.topicId || item.key.slice(TOPIC_OVERRIDE_PREFIX.length).replace(/\.md$/, "");
+        overrideByTopicId.set(tid, item.frontmatter.status);
+      }
       continue;
     }
     const tid = item.frontmatter.topicId;
@@ -737,11 +752,15 @@ function renderRegistry() {
           ${sortableHeader("intentWeight", "Интент")}
           ${sortableHeader("fitWeight", "Соответствие")}
           ${sortableHeader("score", "Балл")}
-          <th>Статус</th><th></th>
+          <th>Статус</th><th>ТЗ</th><th></th>
         </tr></thead>
         <tbody>
           ${filtered.map((r) => {
             const product = PRODUCTS.find((p) => p.slug === r.product);
+            const brief = briefRowsByTopicId.get(r.topicId);
+            const briefCell = brief
+              ? `<button class="btn btn-sm registry-open-brief" data-topic-id="${escapeHtml(r.topicId)}">ТЗ → <span class="chip ${brief.status}">${escapeHtml(brief.status)}</span></button>`
+              : `<span class="muted">нет</span>`;
             return `<tr>
               <td>${product ? product.name : r.product}</td>
               <td>${r.number}</td>
@@ -752,6 +771,7 @@ function renderRegistry() {
               <td class="muted">${escapeHtml(FIT_LABELS[r.fit])} ×${FIT_WEIGHT[r.fit]}</td>
               <td><strong>${escapeHtml(String(scoreLabel(r)))}</strong></td>
               <td><span class="chip ${statusChipClass(r)}">${escapeHtml(statusLabel(r))}</span></td>
+              <td>${briefCell}</td>
               <td>${registryActionCell(r)}</td>
             </tr>`;
           }).join("")}
@@ -783,6 +803,167 @@ function renderRegistry() {
   for (const cell of document.querySelectorAll(".registry-detail")) {
     cell.addEventListener("click", () => openTopicDetail(cell.dataset.topicId));
   }
+  for (const btn of document.querySelectorAll(".registry-open-brief")) {
+    btn.addEventListener("click", () => openBriefDetail(btn.dataset.topicId));
+  }
+}
+
+// ---------- ТЗ (Stage 2, Гейт 2 — добавлено 2026-09-17) ----------
+
+// Объекты _briefs/<product>/<topicId>.md уже приходят вместе с остальным
+// списком (?action=list грузит весь бакет разом) — отдельного запроса не
+// нужно, только фильтр по префиксу поверх уже загруженного `articles`.
+function computeBriefRows() {
+  const map = new Map();
+  for (const item of articles) {
+    if (!isBrief(item)) continue;
+    const topicId = item.frontmatter.topicId || item.key.slice(BRIEF_PREFIX.length).replace(/\.md$/, "");
+    map.set(topicId, {
+      topicId,
+      product: item.frontmatter.product || topicId.split("-").slice(0, -1).join("-"),
+      status: item.frontmatter.status || "draft",
+      key: item.key,
+      etag: item.etag,
+      lastModified: item.lastModified,
+    });
+  }
+  return map;
+}
+
+async function loadBriefs(forceRefresh) {
+  document.getElementById("briefs-table").innerHTML = '<div class="empty-list">Загрузка…</div>';
+  if (!articles.length || forceRefresh) {
+    const res = await api("?action=list");
+    if (res.ok) {
+      const data = await res.json();
+      articles = data.items;
+    }
+  }
+  renderBriefs();
+}
+
+function briefsFilterSetup() {
+  const productSelect = document.getElementById("briefs-filter-product");
+  if (!productSelect.options.length) {
+    productSelect.innerHTML =
+      '<option value="">Все продукты</option>' +
+      PRODUCTS.map((p) => `<option value="${p.slug}">${p.name}</option>`).join("");
+    productSelect.addEventListener("change", renderBriefs);
+    document.getElementById("briefs-filter-status").addEventListener("change", renderBriefs);
+  }
+}
+
+function renderBriefs() {
+  briefsFilterSetup();
+  briefRowsByTopicId = computeBriefRows();
+  const rows = [...briefRowsByTopicId.values()];
+
+  const productFilter = document.getElementById("briefs-filter-product").value;
+  const statusFilter = document.getElementById("briefs-filter-status").value;
+  let filtered = rows;
+  if (productFilter) filtered = filtered.filter((r) => r.product === productFilter);
+  if (statusFilter) filtered = filtered.filter((r) => r.status === statusFilter);
+  filtered.sort((a, b) => (a.topicId > b.topicId ? 1 : -1));
+
+  const draftCount = rows.filter((r) => r.status === "draft").length;
+  const approvedCount = rows.filter((r) => r.status === "approved").length;
+  document.getElementById("briefs-summary").innerHTML = `
+    <div class="summary-cards">
+      <div class="summary-card"><div class="summary-card__value">${rows.length}</div><div class="summary-card__label">ТЗ всего</div></div>
+      <div class="summary-card"><div class="summary-card__value">${draftCount}</div><div class="summary-card__label">ждут решения</div></div>
+      <div class="summary-card"><div class="summary-card__value">${approvedCount}</div><div class="summary-card__label">одобрено, ждёт черновика</div></div>
+    </div>
+  `;
+
+  document.getElementById("briefs-table").innerHTML = filtered.length
+    ? `<table class="registry-table">
+        <thead><tr><th>Продукт</th><th>ID темы</th><th>Статус</th><th>Обновлено</th><th></th></tr></thead>
+        <tbody>
+          ${filtered.map((r) => {
+            const product = PRODUCTS.find((p) => p.slug === r.product);
+            const topicTitle = topics ? topics.find((t) => t.topicId === r.topicId)?.title : null;
+            return `<tr>
+              <td>${product ? product.name : r.product}</td>
+              <td class="title-cell brief-detail" data-topic-id="${escapeHtml(r.topicId)}" title="Открыть ТЗ целиком">${escapeHtml(r.topicId)}${topicTitle ? ` — ${escapeHtml(topicTitle)}` : ""}</td>
+              <td><span class="chip ${r.status}">${escapeHtml(r.status)}</span></td>
+              <td class="muted">${r.lastModified ? new Date(r.lastModified).toLocaleString("ru-RU") : "—"}</td>
+              <td><button class="btn btn-sm brief-detail" data-topic-id="${escapeHtml(r.topicId)}">Открыть →</button></td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>`
+    : '<div class="empty-list">ТЗ пока нет — появятся, когда hub-writer или routine материализуют Stage 2 по утверждённой теме.</div>';
+
+  for (const el of document.querySelectorAll(".brief-detail")) {
+    el.addEventListener("click", () => openBriefDetail(el.dataset.topicId));
+  }
+}
+
+// ---------- модалка ТЗ ----------
+
+const briefDetailModal = document.getElementById("brief-detail-modal");
+const briefDetailContent = document.getElementById("brief-detail-content");
+
+function closeBriefDetail() {
+  briefDetailModal.hidden = true;
+  briefDetailContent.innerHTML = "";
+}
+
+briefDetailModal.addEventListener("click", (e) => {
+  if (e.target === briefDetailModal) closeBriefDetail();
+});
+
+async function setBriefStatus(key, raw, status) {
+  const { fm, body } = parseFrontmatter(raw);
+  fm.status = status;
+  const newRaw = `---\n${Object.entries(fm).map(([k, v]) => `${k}: ${v}`).join("\n")}\n---\n${body}`;
+  const res = await api("", { method: "PUT", body: JSON.stringify({ key, raw: newRaw }) });
+  if (!res.ok) {
+    alert(`Не удалось обновить статус ТЗ (${res.status})`);
+    return;
+  }
+  closeBriefDetail();
+  await loadBriefs(true);
+  if (!viewRegistryEl.hidden) renderRegistry();
+}
+
+async function openBriefDetail(topicId) {
+  const r = briefRowsByTopicId.get(topicId) || computeBriefRows().get(topicId);
+  if (!r) return;
+  briefDetailContent.innerHTML = `<div class="modal-note">Загрузка ТЗ…</div>`;
+  briefDetailModal.hidden = false;
+
+  const res = await api(`?action=get&key=${encodeURIComponent(r.key)}`);
+  if (!res.ok) {
+    briefDetailContent.innerHTML = `<div class="modal-note">Не удалось загрузить ТЗ (${res.status})</div>
+      <div class="modal-close-row"><button class="btn primary" id="brief-detail-close">Закрыть</button></div>`;
+    document.getElementById("brief-detail-close").addEventListener("click", closeBriefDetail);
+    return;
+  }
+  const data = await res.json();
+  const { fm, body } = parseFrontmatter(data.raw);
+  const product = PRODUCTS.find((p) => p.slug === fm.product);
+
+  const actionsHtml =
+    fm.status === "approved"
+      ? `<button class="btn btn-sm" id="brief-unapprove-btn">Вернуть на доработку</button>`
+      : `<button class="btn btn-sm primary" id="brief-approve-btn">Утвердить ТЗ</button>`;
+
+  briefDetailContent.innerHTML = `
+    <h2>${escapeHtml(fm.topicId || topicId)}</h2>
+    <div class="modal-subtitle">${product ? product.name : fm.product || ""} · <span class="chip ${fm.status}">${escapeHtml(fm.status || "draft")}</span></div>
+    <div class="modal-note" style="margin:12px 0">Гейт 2 (HUB.md, «Двухступенчатый гейт») — пока статус не «approved», ни hub-writer, ни routine не начинают черновик по этой теме.</div>
+    <div class="preview-box">${window.marked ? marked.parse(body || "") : escapeHtml(body || "")}</div>
+    <div class="modal-close-row">
+      ${actionsHtml}
+      <button class="btn" id="brief-detail-close">Закрыть</button>
+    </div>
+  `;
+  document.getElementById("brief-detail-close").addEventListener("click", closeBriefDetail);
+  const approveBtn = document.getElementById("brief-approve-btn");
+  if (approveBtn) approveBtn.addEventListener("click", () => setBriefStatus(r.key, data.raw, "approved"));
+  const unapproveBtn = document.getElementById("brief-unapprove-btn");
+  if (unapproveBtn) unapproveBtn.addEventListener("click", () => setBriefStatus(r.key, data.raw, "draft"));
 }
 
 // ---------- модалка "из чего складывается частотность" ----------

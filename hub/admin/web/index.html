@@ -38,6 +38,7 @@
         <nav class="tabs">
           <button id="tab-articles" class="tab is-active" data-tab="articles">Статьи</button>
           <button id="tab-registry" class="tab" data-tab="registry">Реестр тем</button>
+          <button id="tab-briefs" class="tab" data-tab="briefs">ТЗ</button>
         </nav>
         <span class="topbar__meta" id="article-count"></span>
       </div>
@@ -90,10 +91,27 @@
       <div id="registry-table"></div>
       <div id="registry-orphans"></div>
     </div>
+
+    <div class="registry" id="view-briefs" hidden>
+      <div id="briefs-summary" class="registry-summary"></div>
+      <div class="registry-filters">
+        <select id="briefs-filter-product"></select>
+        <select id="briefs-filter-status">
+          <option value="">Все статусы</option>
+          <option value="draft">ждёт решения (draft)</option>
+          <option value="approved">одобрено (approved)</option>
+        </select>
+      </div>
+      <div id="briefs-table"></div>
+    </div>
   </div>
 
   <div id="topic-detail-modal" class="modal-overlay" hidden>
     <div class="modal-card" id="topic-detail-content"></div>
+  </div>
+
+  <div id="brief-detail-modal" class="modal-overlay" hidden>
+    <div class="modal-card" id="brief-detail-content"></div>
   </div>
 
   <script type="module" src="app.js"></script>

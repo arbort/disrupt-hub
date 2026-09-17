@@ -242,7 +242,10 @@ a { color: var(--accent-blue); }
 .modal-phrase-list li { display: flex; justify-content: space-between; padding: var(--ui-space-4) 0; font-size: var(--ui-subtitle-font-size); border-bottom: 1px solid var(--primary-4); }
 .modal-phrase-list li .count { font-family: var(--ui-font-mono); color: var(--primary-50); }
 .modal-note { font-size: var(--ui-caption-font-size); color: var(--primary-40); margin-top: var(--ui-space-8); }
-.modal-close-row { display: flex; justify-content: flex-end; margin-top: var(--ui-space-20); }
+.modal-close-row { display: flex; justify-content: flex-end; gap: var(--ui-space-8); margin-top: var(--ui-space-20); }
+
+/* --- модалка ТЗ (Stage 2, Гейт 2 — добавлено 2026-09-17): контент длиннее, чем разбивка частотности --- */
+#brief-detail-content { max-width: 820px; }
 
 /* --- editor --- */
 .editor {

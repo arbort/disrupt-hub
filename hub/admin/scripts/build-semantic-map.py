@@ -91,9 +91,18 @@ def norm(phrase):
     return re.sub(r"\s+", " ", (phrase or "").strip().lower())
 
 
+def stem(word):
+    """Грубая нормализация окончаний (не настоящая лемматизация): без неё
+    "отследить цикл" (топ-2 конверсий Айвы, 959) не совпадало ни с одной
+    темой про цикл, потому что в бэклоге эти же темы говорят "цикла"/
+    "циклу" — разные словоформы, разные строки при точном сравнении.
+    Обрубание до 4 символов — совпадает."""
+    return word[:4] if len(word) > 4 else word
+
+
 def significant_words(text):
     words = re.findall(r"[а-яёa-z]+", (text or "").lower())
-    return {w for w in words if len(w) >= 4 and w not in STOPWORDS}
+    return {stem(w) for w in words if len(w) >= 4 and w not in STOPWORDS}
 
 
 def parse_freq(raw):

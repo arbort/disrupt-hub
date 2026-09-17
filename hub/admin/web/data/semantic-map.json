@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-17T21:54:23.637007+00:00",
+  "generatedAt": "2026-09-17T21:57:23.781685+00:00",
   "bands": [
     {
       "id": "long_tail",
@@ -163,7 +163,7 @@
           "cr": 1.65,
           "cpa": 211.0,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "Clover",
@@ -187,7 +187,7 @@
           "cr": 3.77,
           "cpa": 145.4,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "Clue",
@@ -235,7 +235,7 @@
           "cr": 1.93,
           "cpa": 161.1,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "Clatch",
@@ -1356,7 +1356,7 @@
           "cr": 17.43,
           "cpa": 146.4,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "проверить текст на ошибки",
@@ -1428,7 +1428,7 @@
           "cr": 15.02,
           "cpa": 143.8,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "код",
@@ -1452,7 +1452,7 @@
           "cr": 21.22,
           "cpa": 139.8,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "таблицы",
@@ -1464,7 +1464,7 @@
           "cr": 13.21,
           "cpa": 258.1,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "документ",
@@ -1639,7 +1639,7 @@
           "cr": 15.94,
           "cpa": 164.1,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "прямые конкуренты категории",
@@ -1687,7 +1687,7 @@
           "cr": 18.15,
           "cpa": 192.3,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "диктовка",
@@ -1735,7 +1735,7 @@
           "cr": 13.48,
           "cpa": 145.5,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "скачать нейросеть",
@@ -1771,7 +1771,7 @@
           "cr": 13.83,
           "cpa": 165.6,
           "isBrandCompetitor": false,
-          "coveredBySeo": false
+          "coveredBySeo": true
         },
         {
           "group": "win+h / apple dictation",

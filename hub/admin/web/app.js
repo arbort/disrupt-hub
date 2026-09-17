@@ -373,7 +373,7 @@ function readFormIntoCurrent() {
 
 function onFieldChange() {
   readFormIntoCurrent();
-  renderSeoPanel();
+  renderSeoChecksList();
 }
 
 function togglePreview() {
@@ -515,18 +515,27 @@ function computeSeoChecks() {
   return { checks, canonical };
 }
 
-function renderSeoPanel() {
+// Баг 2026-09-17: renderSeoPanel() раньше пересобирала innerHTML всей
+// панели, включая сам <input id="seo-keyword">, на КАЖДЫЙ ввод символа в
+// это же поле (обработчик "input" вызывал renderSeoPanel() снова). Браузер
+// на каждый keystroke уничтожал и создавал заново DOM-узел input — фокус и
+// позиция курсора слетали, приходилось кликать в поле заново на каждую
+// букву. Чек-лист при этом честно пересчитывался под введённый текст, но
+// из-за постоянной потери фокуса буквы вставлялись не туда, куда печатали
+// (клик мышью не всегда ставит курсor туда же, где остановился ввод) — со
+// стороны это выглядело как "рандомная" смена анализа.
+// Фикс: оболочка панели (заголовок, само поле keyword, чекбоксы широкого
+// ревью) рисуется один раз в renderSeoPanel(); обновление под ввод — только
+// внутри #seo-checks-container через renderSeoChecksList(), не трогая узел
+// input вообще. onFieldChange() (ввод в поля статьи слева) теперь тоже
+// зовёт renderSeoChecksList(), а не полный renderSeoPanel().
+function renderSeoChecksList() {
   const { checks, canonical } = computeSeoChecks();
   const icon = { ok: "✓", warn: "!", bad: "✕" };
-
-  seoPanelEl.innerHTML = `
-    <h2>SEO-чеклист</h2>
-    <div class="field">
-      <label>Ключевое слово (для проверки, не сохраняется в файл)</label>
-      <input id="seo-keyword" value="${escapeHtml(seoState.focusKeyword)}" placeholder="напр. надиктовать письмо" />
-    </div>
+  const container = document.getElementById("seo-checks-container");
+  if (!container) return;
+  container.innerHTML = `
     <div class="seo-check__value" style="display:block;margin-bottom:12px;">URL: ${escapeHtml(canonical)}</div>
-
     <h3>Технически (platform-technical-seo.md)</h3>
     ${checks.map((c) => `
       <div class="seo-check ${c.level}">
@@ -535,6 +544,17 @@ function renderSeoPanel() {
         <span class="seo-check__value">${escapeHtml(c.value)}</span>
       </div>
     `).join("")}
+  `;
+}
+
+function renderSeoPanel() {
+  seoPanelEl.innerHTML = `
+    <h2>SEO-чеклист</h2>
+    <div class="field">
+      <label>Ключевое слово (для проверки, не сохраняется в файл)</label>
+      <input id="seo-keyword" value="${escapeHtml(seoState.focusKeyword)}" placeholder="напр. надиктовать письмо" />
+    </div>
+    <div id="seo-checks-container"></div>
 
     <h3>Широкое ревью (сессионное, не сохраняется)</h3>
     <div class="gate-checklist">
@@ -547,11 +567,13 @@ function renderSeoPanel() {
 
   document.getElementById("seo-keyword").addEventListener("input", (e) => {
     seoState.focusKeyword = e.target.value;
-    renderSeoPanel();
+    renderSeoChecksList();
   });
   document.getElementById("gate-brief").addEventListener("change", (e) => { seoState.gateBrief = e.target.checked; });
   document.getElementById("gate-brand").addEventListener("change", (e) => { seoState.gateBrand = e.target.checked; });
   document.getElementById("gate-qc").addEventListener("change", (e) => { seoState.gateQc = e.target.checked; });
+
+  renderSeoChecksList();
 }
 
 // ---------- tabs ----------

@@ -39,6 +39,7 @@
           <button id="tab-articles" class="tab is-active" data-tab="articles">Статьи</button>
           <button id="tab-registry" class="tab" data-tab="registry">Реестр тем</button>
           <button id="tab-briefs" class="tab" data-tab="briefs">ТЗ</button>
+          <button id="tab-syndication" class="tab" data-tab="syndication">Синдикация</button>
         </nav>
         <span class="topbar__meta" id="article-count"></span>
       </div>
@@ -103,6 +104,25 @@
         </select>
       </div>
       <div id="briefs-table"></div>
+    </div>
+
+    <div class="layout" id="view-syndication" hidden>
+      <aside class="sidebar">
+        <button id="new-syndication-btn" class="btn primary sidebar__new">+ Синдикация</button>
+        <div class="registry-filters" style="padding:0 var(--ui-space-12) var(--ui-space-8)">
+          <select id="syndication-filter-platform">
+            <option value="">Все площадки</option>
+            <option value="dzen">Dzen</option>
+            <option value="vc">VC</option>
+            <option value="habr">Habr</option>
+          </select>
+        </div>
+        <div id="syndication-list"></div>
+      </aside>
+
+      <main class="editor" id="syndication-editor">
+        <div class="editor__placeholder">Выберите пакет слева или создайте новый.</div>
+      </main>
     </div>
   </div>
 

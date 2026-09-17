@@ -32,6 +32,18 @@ const isTopicOverride = (item) => item.key.startsWith(TOPIC_OVERRIDE_PREFIX);
 const BRIEF_PREFIX = "_briefs/";
 const isBrief = (item) => item.key.startsWith(BRIEF_PREFIX);
 
+// Синдикация (Stage 7, добавлено 2026-09-17 — "ремесло хуков для ленты",
+// HUB.md) — тот же приём хранения: _syndication/<platform>/<topicId>.md в
+// том же бакете, без единой правки Cloud Function.
+const SYNDICATION_PREFIX = "_syndication/";
+const isSyndication = (item) => item.key.startsWith(SYNDICATION_PREFIX);
+const SYNDICATION_PLATFORMS = [
+  { slug: "dzen", name: "Dzen", hint: "Число или контраст в заголовке; короткий связный абзац-затравка — Dzen показывает сниппет интро в ленте, от него зависит клик. Тон тела — ближе к оригиналу, RU-нативная площадка." },
+  { slug: "vc", name: "VC", hint: "Личный/инсайдерский заход («мы попробовали», «команда протестировала»); вопрос в конце текста, провоцирующий комментарии. Подаётся как инсайт/личный опыт команды, не пресс-релиз." },
+  { slug: "habr", name: "Habr", hint: "Технический/любопытствующий заход («как мы»), не маркетинговый. Только органичный голос команды — никакого рекламного тона (лессон в ../shared/channels.md)." },
+];
+const SYNDICATION_STATUS_ORDER = ["draft", "ready", "published"];
+
 // ---------- SEO-приоритет тем (добавлено 2026-09-13) ----------
 // Интегральный балл = частотность (Wordstat) × вес интента × вес продуктового
 // соответствия. Веса — не измерены (нет данных о CTR/конверсии на сайте,
@@ -212,7 +224,7 @@ async function loadArticles() {
 }
 
 function renderArticleList() {
-  const realArticles = articles.filter((item) => !isTopicOverride(item) && !isBrief(item));
+  const realArticles = articles.filter((item) => !isTopicOverride(item) && !isBrief(item) && !isSyndication(item));
   articleCountEl.textContent = `${realArticles.length} шт.`;
   if (!realArticles.length) {
     articleListEl.innerHTML = '<div class="empty-list">Статей в бакете пока нет</div>';
@@ -547,6 +559,7 @@ function renderSeoPanel() {
 const viewArticlesEl = document.getElementById("view-articles");
 const viewRegistryEl = document.getElementById("view-registry");
 const viewBriefsEl = document.getElementById("view-briefs");
+const viewSyndicationEl = document.getElementById("view-syndication");
 let topics = null; // кэш data/topics.json, грузится один раз за сессию
 let topicFreqDetails = null; // кэш data/topic-frequency-details.json — разбивка по похожим/смежным запросам
 let registrySort = { key: null, dir: "desc" }; // сортировка таблицы реестра по клику на заголовок колонки
@@ -556,14 +569,17 @@ let briefRowsByTopicId = new Map(); // последний рендер вкла�
 document.getElementById("tab-articles").addEventListener("click", () => switchTab("articles"));
 document.getElementById("tab-registry").addEventListener("click", () => switchTab("registry"));
 document.getElementById("tab-briefs").addEventListener("click", () => switchTab("briefs"));
+document.getElementById("tab-syndication").addEventListener("click", () => switchTab("syndication"));
 
 function switchTab(name) {
   for (const btn of document.querySelectorAll(".tab")) btn.classList.toggle("is-active", btn.dataset.tab === name);
   viewArticlesEl.hidden = name !== "articles";
   viewRegistryEl.hidden = name !== "registry";
   viewBriefsEl.hidden = name !== "briefs";
+  viewSyndicationEl.hidden = name !== "syndication";
   if (name === "registry") loadRegistry();
   if (name === "briefs") loadBriefs();
+  if (name === "syndication") loadSyndications();
 }
 
 // ---------- registry (реестр тем) ----------
@@ -655,7 +671,7 @@ function renderRegistry() {
   const overrideByTopicId = new Map();
   const orphanArticles = [];
   for (const item of articles) {
-    if (isTopicOverride(item) || isBrief(item)) {
+    if (isTopicOverride(item) || isBrief(item) || isSyndication(item)) {
       if (isTopicOverride(item)) {
         const tid = item.frontmatter.topicId || item.key.slice(TOPIC_OVERRIDE_PREFIX.length).replace(/\.md$/, "");
         overrideByTopicId.set(tid, item.frontmatter.status);
@@ -1057,6 +1073,220 @@ function openTopicDetail(topicId) {
       openArticle(btn.dataset.key);
     });
   }
+}
+
+// ---------- Синдикация (Stage 7, добавлено 2026-09-17) ----------
+
+const syndicationEditorEl = document.getElementById("syndication-editor");
+let currentSyndication = null; // { key, etag, fm, body, isNew }
+
+function syndicationItems() {
+  return articles.filter(isSyndication);
+}
+
+async function loadSyndications(forceRefresh) {
+  document.getElementById("syndication-list").innerHTML = '<div class="empty-list">Загрузка…</div>';
+  if (!articles.length || forceRefresh) {
+    const res = await api("?action=list");
+    if (res.ok) {
+      const data = await res.json();
+      articles = data.items;
+    }
+  }
+  renderSyndicationList();
+}
+
+function syndicationFilterSetup() {
+  const el = document.getElementById("syndication-filter-platform");
+  if (!el.dataset.wired) {
+    el.addEventListener("change", renderSyndicationList);
+    el.dataset.wired = "1";
+  }
+}
+
+function renderSyndicationList() {
+  syndicationFilterSetup();
+  const platformFilter = document.getElementById("syndication-filter-platform").value;
+  const listEl = document.getElementById("syndication-list");
+  let items = syndicationItems();
+  if (platformFilter) items = items.filter((i) => i.frontmatter.platform === platformFilter);
+  items.sort((a, b) => (a.key > b.key ? 1 : -1));
+
+  if (!items.length) {
+    listEl.innerHTML = '<div class="empty-list">Пакетов синдикации пока нет</div>';
+    return;
+  }
+  listEl.innerHTML = "";
+  for (const item of items) {
+    const fm = item.frontmatter;
+    const platform = SYNDICATION_PLATFORMS.find((p) => p.slug === fm.platform);
+    const btn = document.createElement("button");
+    btn.className = "article-row" + (currentSyndication && currentSyndication.key === item.key ? " is-active" : "");
+    btn.innerHTML =
+      `<span class="article-row__title">${escapeHtml(fm.hookHeadline || fm.topicId || item.key)}</span>` +
+      `<span class="article-row__meta"><span class="chip ${fm.status || "draft"}">${escapeHtml(fm.status || "draft")}</span>${platform ? platform.name : (fm.platform || "?")} · ${escapeHtml(fm.topicId || "")}</span>`;
+    btn.addEventListener("click", () => openSyndication(item.key));
+    listEl.appendChild(btn);
+  }
+}
+
+document.getElementById("new-syndication-btn").addEventListener("click", () => {
+  const topicId = prompt("ID темы (например tool-1):", "");
+  if (!topicId) return;
+  const product = topicId.split("-").slice(0, -1).join("-");
+  const platform = prompt(`Площадка (${SYNDICATION_PLATFORMS.map((p) => p.slug).join(" / ")}):`, "vc");
+  if (!platform || !SYNDICATION_PLATFORMS.some((p) => p.slug === platform.trim())) {
+    alert("Площадка должна быть одной из: " + SYNDICATION_PLATFORMS.map((p) => p.slug).join(", "));
+    return;
+  }
+  const original = articles.find((i) => !isTopicOverride(i) && !isBrief(i) && !isSyndication(i) && i.frontmatter.topicId === topicId);
+  if (!original) {
+    alert(`Статья с topicId "${topicId}" не найдена в бакете — синдикация готовится после публикации оригинала (Stage 7, гейт «после индексации»). Убедитесь, что статья уже есть во вкладке «Статьи».`);
+    return;
+  }
+  const key = `${SYNDICATION_PREFIX}${platform.trim()}/${topicId}.md`;
+  currentSyndication = {
+    key,
+    etag: null,
+    fm: {
+      topicId, product, platform: platform.trim(), status: "draft",
+      originalKey: original.key, liveUrl: "", hookHeadline: "",
+      createdAt: new Date().toISOString().slice(0, 10),
+    },
+    body: "\n",
+    isNew: true,
+  };
+  renderSyndicationList();
+  renderSyndicationEditor();
+});
+
+async function openSyndication(key) {
+  const res = await api(`?action=get&key=${encodeURIComponent(key)}`);
+  if (!res.ok) {
+    alert(`Не удалось загрузить пакет (${res.status})`);
+    return;
+  }
+  const data = await res.json();
+  const { fm, body } = parseFrontmatter(data.raw);
+  currentSyndication = { key, etag: data.etag, fm, body, isNew: false };
+  renderSyndicationList();
+  renderSyndicationEditor();
+}
+
+function serializeSyndicationFrontmatter(fm) {
+  const order = ["topicId", "product", "platform", "status", "originalKey", "liveUrl", "hookHeadline", "createdAt"];
+  const lines = ["---"];
+  for (const key of order) {
+    const value = (fm[key] || "").trim();
+    if (!value) continue;
+    lines.push(`${key}: ${value}`);
+  }
+  lines.push("---");
+  return lines.join("\n");
+}
+
+function renderSyndicationEditor() {
+  if (!currentSyndication) {
+    syndicationEditorEl.innerHTML = '<div class="editor__placeholder">Выберите пакет слева или создайте новый.</div>';
+    return;
+  }
+  const fm = currentSyndication.fm;
+  const platform = SYNDICATION_PLATFORMS.find((p) => p.slug === fm.platform);
+
+  syndicationEditorEl.innerHTML = `
+    <div class="key-preview">${currentSyndication.isNew ? "Новый пакет" : "Файл"}: ${currentSyndication.key}${currentSyndication.isNew ? "" : ` · etag ${currentSyndication.etag}`}</div>
+    ${platform ? `<div class="modal-note" style="margin-bottom:var(--ui-space-12)"><strong>${platform.name}:</strong> ${escapeHtml(platform.hint)}</div>` : ""}
+    <div class="editor-grid">
+      <div class="field"><label>Тема (topicId)</label><input id="s-topicId" value="${escapeHtml(fm.topicId || "")}" disabled /></div>
+      <div class="field"><label>Продукт</label><input id="s-product" value="${escapeHtml(fm.product || "")}" disabled /></div>
+      <div class="field"><label>Площадка</label><input id="s-platform" value="${platform ? platform.name : (fm.platform || "")}" disabled /></div>
+      <div class="field"><label>Оригинал в бакете</label><input id="s-originalKey" value="${escapeHtml(fm.originalKey || "")}" disabled /></div>
+      <div class="field"><label>Статус</label>
+        <select id="s-status">${SYNDICATION_STATUS_ORDER.map((s) => `<option value="${s}" ${s === fm.status ? "selected" : ""}>${s}</option>`).join("")}</select>
+      </div>
+      <div class="field"><label>Живая ссылка (после публикации на площадке)</label><input id="s-liveUrl" value="${escapeHtml(fm.liveUrl || "")}" placeholder="https://..." /></div>
+      <div class="field full"><label>Заголовок-хук (отдельно от H1 оригинала)</label><input id="s-hookHeadline" value="${escapeHtml(fm.hookHeadline || "")}" /></div>
+    </div>
+
+    <div class="field">
+      <label>Открывающий абзац-затравка + адаптированное тело (Markdown)</label>
+      <textarea id="s-body" class="body-editor">${escapeHtml(currentSyndication.body)}</textarea>
+    </div>
+
+    <div class="editor-footer">
+      <div class="btn-row">
+        <button id="s-save-btn" class="btn primary">Сохранить</button>
+        <button id="s-preview-btn" class="btn">Превью</button>
+        ${currentSyndication.isNew ? "" : '<button id="s-delete-btn" class="btn danger">Удалить</button>'}
+      </div>
+      <div id="s-save-status" class="save-status"></div>
+    </div>
+    <div id="s-conflict-box"></div>
+    <div id="s-preview-box" class="preview-box" hidden></div>
+  `;
+
+  for (const id of ["s-status", "s-liveUrl", "s-hookHeadline", "s-body"]) {
+    document.getElementById(id).addEventListener("input", readSyndicationForm);
+  }
+  document.getElementById("s-save-btn").addEventListener("click", saveSyndication);
+  document.getElementById("s-preview-btn").addEventListener("click", () => {
+    const box = document.getElementById("s-preview-box");
+    box.hidden = !box.hidden;
+    if (!box.hidden) box.innerHTML = window.marked ? marked.parse(currentSyndication.body || "") : escapeHtml(currentSyndication.body || "");
+  });
+  const delBtn = document.getElementById("s-delete-btn");
+  if (delBtn) delBtn.addEventListener("click", deleteSyndication);
+}
+
+function readSyndicationForm() {
+  currentSyndication.fm.status = document.getElementById("s-status").value;
+  currentSyndication.fm.liveUrl = document.getElementById("s-liveUrl").value;
+  currentSyndication.fm.hookHeadline = document.getElementById("s-hookHeadline").value;
+  currentSyndication.body = document.getElementById("s-body").value;
+}
+
+async function saveSyndication() {
+  readSyndicationForm();
+  const statusEl = document.getElementById("s-save-status");
+  const conflictBox = document.getElementById("s-conflict-box");
+  conflictBox.innerHTML = "";
+  statusEl.textContent = "Сохраняю…";
+  statusEl.className = "save-status";
+
+  const raw = `${serializeSyndicationFrontmatter(currentSyndication.fm)}\n${currentSyndication.body}`;
+  const res = await api("", {
+    method: "PUT",
+    body: JSON.stringify({ key: currentSyndication.key, raw, ifMatch: currentSyndication.isNew ? undefined : currentSyndication.etag }),
+  });
+
+  if (res.status === 200) {
+    const data = await res.json();
+    currentSyndication.etag = data.etag;
+    currentSyndication.isNew = false;
+    statusEl.textContent = "Сохранено.";
+    statusEl.className = "save-status ok";
+    await loadSyndications(true);
+  } else if (res.status === 409) {
+    const data = await res.json();
+    statusEl.textContent = "Конфликт: файл изменили параллельно";
+    statusEl.className = "save-status err";
+    conflictBox.innerHTML = `<div class="conflict-box">Текущее содержимое в бакете:<pre>${escapeHtml(data.currentRaw)}</pre>Обновите вручную и повторите сохранение.</div>`;
+  } else {
+    statusEl.textContent = `Ошибка ${res.status}`;
+    statusEl.className = "save-status err";
+  }
+}
+
+async function deleteSyndication() {
+  if (!confirm(`Удалить пакет ${currentSyndication.key}? Действие необратимо.`)) return;
+  const res = await api(`?key=${encodeURIComponent(currentSyndication.key)}`, { method: "DELETE" });
+  if (!res.ok) {
+    alert(`Не удалось удалить (${res.status})`);
+    return;
+  }
+  currentSyndication = null;
+  await loadSyndications(true);
+  renderSyndicationEditor();
 }
 
 boot();

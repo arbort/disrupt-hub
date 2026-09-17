@@ -161,6 +161,7 @@ a { color: var(--accent-blue); }
 .chip.qc { background: color-mix(in srgb, var(--accent-purple) 20%, transparent); color: var(--accent-purple); }
 .chip.published { background: color-mix(in srgb, var(--accent-green) 20%, transparent); color: var(--accent-green); }
 .chip.approved { background: color-mix(in srgb, var(--accent-orange) 20%, transparent); color: var(--accent-orange); }
+.chip.ready { background: color-mix(in srgb, var(--accent-blue) 20%, transparent); color: var(--accent-blue); }
 
 /* --- registry (реестр тем) --- */
 .registry { flex: 1; overflow-y: auto; padding: var(--ui-space-20); }

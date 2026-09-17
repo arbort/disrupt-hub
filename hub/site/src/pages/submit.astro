@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout
+  title="Прислать статью — Disrupt-Hub"
+  description="Как поделиться своим кейсом использования продуктов Дизрапта."
+>
+  <Header />
+  <main class="container">
+    <h1 class="h1">Прислать свою статью</h1>
+    <p class="lead">
+      Форма приёма статей ещё не готова — это отдельная техническая задача
+      (см. <code>disrupt/hub/HUB.md</code>). Пока опишите свой сценарий
+      использования любого продукта Дизрапта в
+      <a href="https://t.me/disrupt_team">t.me/disrupt_team</a>
+      — мы свяжемся и разберём кейс вручную.
+    </p>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .lead {
+    max-width: 640px;
+    margin-top: var(--ui-space-16);
+    padding-bottom: var(--ui-space-44);
+    color: var(--primary-80);
+  }
+  code {
+    font-family: var(--ui-font-mono);
+    background: var(--elevation-1);
+    padding: 0 var(--ui-space-4);
+    border-radius: var(--ui-radius-4);
+  }
+</style>

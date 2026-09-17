@@ -1,0 +1,105 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import { products } from "../../data/products";
+
+export async function getStaticPaths() {
+  const articles = await getCollection("articles", ({ data }) => data.status === "published");
+  return articles.map((article) => {
+    const [productSlug, ...rest] = article.id.split("/");
+    return {
+      params: { product: productSlug, slug: rest.join("/") },
+      props: { article },
+    };
+  });
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+const product = products.find((p) => p.slug === article.data.product);
+
+const canonical = article.data.canonical ?? new URL(`/${article.id}/`, Astro.site).toString();
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": article.data.schemaType ?? "Article",
+  headline: article.data.h1 ?? article.data.title,
+  description: article.data.metaDescription,
+  url: canonical,
+  ...(article.data.date ? { datePublished: article.data.date.toISOString() } : {}),
+};
+
+const related = (await getCollection("articles", ({ data }) => data.status === "published"))
+  .filter((a) => a.data.product === article.data.product && a.id !== article.id)
+  .slice(0, 4);
+---
+
+<BaseLayout
+  title={article.data.metaTitle ?? article.data.title}
+  description={article.data.metaDescription}
+  canonical={canonical}
+  ogImage={article.data.ogImage}
+  robots={article.data.robots}
+  jsonLd={jsonLd}
+>
+  <Header />
+  <main class="container article">
+    <a class="back" href={`/${article.data.product}/`}>← {product?.name ?? article.data.product}</a>
+    <h1 class="h1">{article.data.h1 ?? article.data.title}</h1>
+    <div class="article__body">
+      <Content />
+    </div>
+
+    {related.length > 0 && (
+      <section class="related">
+        <h2 class="h2 related__title">Ещё про {product?.name ?? article.data.product}</h2>
+        <div class="related__list">
+          {related.map((a) => (
+            <ArticleCard href={`/${a.id}/`} title={a.data.title} />
+          ))}
+        </div>
+      </section>
+    )}
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .back {
+    display: inline-block;
+    color: var(--primary-50);
+    text-decoration: none;
+    margin: var(--ui-space-24) 0 var(--ui-space-16);
+    font-size: var(--ui-subtitle-font-size);
+  }
+  .article {
+    max-width: 720px;
+    padding-bottom: var(--ui-space-44);
+  }
+  .article__body {
+    margin-top: var(--ui-space-24);
+    color: var(--primary-90);
+  }
+  .article__body :global(h2) {
+    font-size: var(--ui-title-24-font-size);
+    margin-top: var(--ui-space-32);
+  }
+  .article__body :global(img) {
+    border-radius: var(--ui-radius-16);
+  }
+  .related {
+    margin-top: var(--ui-space-44);
+    padding-top: var(--ui-space-32);
+    border-top: 1px solid var(--primary-8);
+  }
+  .related__title {
+    margin-bottom: var(--ui-space-16);
+  }
+  .related__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-space-12);
+  }
+</style>

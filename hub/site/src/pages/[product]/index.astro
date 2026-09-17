@@ -1,0 +1,66 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import { products } from "../../data/products";
+
+export async function getStaticPaths() {
+  return products.map((product) => ({
+    params: { product: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const articles = (await getCollection("articles", ({ data }) => data.status === "published")).filter(
+  (a) => a.data.product === product.slug,
+);
+---
+
+<BaseLayout title={`${product.name} — Disrupt-Hub`} description={product.tagline}>
+  <Header />
+  <main class="container">
+    <a class="back" href="/">← все продукты</a>
+    <h1 class="h1">{product.name}</h1>
+    <p class="subtitle product__tagline">{product.tagline}</p>
+
+    {
+      articles.length === 0 ? (
+        <p class="empty">Статей пока нет — бэклог тем ждёт утверждения.</p>
+      ) : (
+        <div class="list">
+          {articles.map((article) => (
+            <ArticleCard href={`/${article.id}/`} title={article.data.title} />
+          ))}
+        </div>
+      )
+    }
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .back {
+    display: inline-block;
+    color: var(--primary-50);
+    text-decoration: none;
+    margin: var(--ui-space-24) 0 var(--ui-space-16);
+    font-size: var(--ui-subtitle-font-size);
+  }
+  .product__tagline {
+    margin: var(--ui-space-12) 0 var(--ui-space-32);
+    max-width: 640px;
+  }
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-space-12);
+    padding-bottom: var(--ui-space-44);
+  }
+  .empty {
+    color: var(--primary-50);
+    padding-bottom: var(--ui-space-44);
+  }
+</style>

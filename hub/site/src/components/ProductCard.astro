@@ -1,0 +1,66 @@
+---
+import type { Product } from "../data/products";
+
+interface Props {
+  product: Product;
+  articleCount: number;
+}
+
+const { product, articleCount } = Astro.props;
+---
+
+<a class="card" href={`/${product.slug}/`}>
+  <div class="card__top">
+    <span class="card__name">{product.name}</span>
+    {product.stub && <span class="card__badge">факты уточняются</span>}
+  </div>
+  <p class="card__tagline">{product.tagline}</p>
+  <span class="card__count">
+    {articleCount === 0 ? "статей пока нет" : `статей: ${articleCount}`}
+  </span>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-space-12);
+    padding: var(--ui-space-24);
+    border-radius: var(--ui-radius-20);
+    background: var(--elevation-1);
+    text-decoration: none;
+    color: var(--primary);
+    border: 1px solid var(--primary-8);
+  }
+  .card:hover {
+    border-color: var(--primary-20);
+  }
+  .card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ui-space-8);
+  }
+  .card__name {
+    font-size: var(--ui-title-24-font-size);
+    font-weight: var(--ui-title-24-font-weight);
+  }
+  .card__badge {
+    font-size: var(--ui-caption-font-size);
+    text-transform: var(--ui-caption-text-transform);
+    color: var(--primary-50);
+    border: 1px solid var(--primary-20);
+    border-radius: var(--ui-radius-full);
+    padding: var(--ui-space-2) var(--ui-space-8);
+    white-space: nowrap;
+  }
+  .card__tagline {
+    margin: 0;
+    color: var(--primary-70);
+    flex-grow: 1;
+  }
+  .card__count {
+    font-size: var(--ui-subtitle-font-size);
+    color: var(--primary-50);
+  }
+</style>

@@ -1,0 +1,19 @@
+{
+  "name": "disrupt-hub-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "sync-content": "aws s3 sync s3://disrupt-hub-content/ ../articles-published/ --endpoint-url https://storage.yandexcloud.net --profile yandex --delete --exclude '*' --include '*.md'",
+    "clean": "rm -rf .astro dist node_modules/.astro",
+    "deploy": "npm run sync-content && npm run clean && astro build && aws s3 sync dist/ s3://disrupt-hub-deploy/ --endpoint-url https://storage.yandexcloud.net --profile yandex --acl public-read --delete",
+    "deploy:admin": "aws s3 sync ../admin/web/ s3://disrupt-hub-deploy/admin/ --endpoint-url https://storage.yandexcloud.net --profile yandex --acl public-read --delete --cache-control no-cache"
+  },
+  "dependencies": {
+    "astro": "^7.3.2",
+    "@astrojs/sitemap": "^3.2.1"
+  }
+}

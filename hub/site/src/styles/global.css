@@ -1,0 +1,74 @@
+/*
+ * Токены — из disrupt/hub/site/src/styles/deslop/, скопированы как есть из
+ * github.com/mishanaer/deslop (primitives/), по их же конвенции "copied
+ * into a project side by side", не npm-пакетом. Не редактировать вручную —
+ * при обновлении deslop копировать заново.
+ *
+ * Расхождение: typography.css называет базовую семью "SB Sans Interface" —
+ * это соответствует файлам SBSansUI-*.otf в deslop (не SBSansText-*),
+ * подключено верно через @font-face в самом typography.css.
+ */
+@import "./deslop/colors.css";
+@import "./deslop/typography.css";
+@import "./deslop/layout.css";
+
+html {
+  /* Тёмная тема включается атрибутом data-color-scheme="dark" на <html>
+     (см. BaseLayout.astro) — это селектор из deslop/colors.css, а не
+     системная prefers-color-scheme. Зафиксировано решением Арсения
+     (2026-09-12): хаб выглядит тёмным независимо от темы посетителя, как и
+     рекламные креативы продуктов на чёрном холсте. */
+  color-scheme: dark;
+  background: var(--background);
+  color: var(--primary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--primary);
+  font-family: var(--ui-font-interface);
+  font-size: var(--ui-body-font-size);
+  line-height: var(--ui-body-line-height);
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 var(--ui-layout-content-inset);
+}
+
+.h1 {
+  font-size: var(--ui-title-52-font-size);
+  line-height: var(--ui-title-52-line-height);
+  font-weight: var(--ui-title-52-font-weight);
+  letter-spacing: var(--ui-title-52-letter-spacing);
+  margin: 0;
+}
+
+.h2 {
+  font-size: var(--ui-title-32-font-size);
+  line-height: var(--ui-title-32-line-height);
+  font-weight: var(--ui-title-32-font-weight);
+  letter-spacing: var(--ui-title-32-letter-spacing);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: var(--ui-subtitle-font-size);
+  line-height: var(--ui-subtitle-line-height);
+  color: var(--primary-60);
+}

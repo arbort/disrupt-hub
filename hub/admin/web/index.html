@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru" data-color-scheme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Disrupt-Hub · Админка</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="styles/deslop/colors.css" />
+  <link rel="stylesheet" href="styles/deslop/typography.css" />
+  <link rel="stylesheet" href="styles/deslop/layout.css" />
+  <link rel="stylesheet" href="styles/admin.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+</head>
+<body>
+
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <h1>Disrupt-Hub</h1>
+      <p>Админка контента. Нужны адрес функции и ключ доступа.</p>
+      <div class="field">
+        <label for="api-base">Адрес функции (invoke URL)</label>
+        <input id="api-base" type="text" placeholder="https://…functions.yandexcloud.net" />
+      </div>
+      <div class="field">
+        <label for="admin-key">Ключ доступа (X-Admin-Key)</label>
+        <input id="admin-key" type="password" placeholder="ADMIN_SECRET" />
+      </div>
+      <button id="login-btn" class="btn primary" style="width:100%">Войти</button>
+      <div id="login-error" class="error-text" hidden></div>
+    </div>
+  </div>
+
+  <div id="app" class="app">
+    <div class="topbar">
+      <div class="topbar__left">
+        <span class="topbar__title">Disrupt-Hub</span>
+        <nav class="tabs">
+          <button id="tab-articles" class="tab is-active" data-tab="articles">Статьи</button>
+          <button id="tab-registry" class="tab" data-tab="registry">Реестр тем</button>
+        </nav>
+        <span class="topbar__meta" id="article-count"></span>
+      </div>
+      <div class="btn-row">
+        <a class="btn" href="https://disrupt-hub.ru" target="_blank" rel="noopener">Открыть сайт →</a>
+        <button id="logout-btn" class="btn">Выйти</button>
+      </div>
+    </div>
+
+    <div class="layout" id="view-articles">
+      <aside class="sidebar">
+        <button id="new-article-btn" class="btn primary sidebar__new">+ Новая статья</button>
+        <div id="article-list"></div>
+      </aside>
+
+      <main class="editor" id="editor">
+        <div class="editor__placeholder">Выберите статью слева или создайте новую.</div>
+      </main>
+
+      <aside class="seo-panel" id="seo-panel" hidden></aside>
+    </div>
+
+    <div class="registry" id="view-registry" hidden>
+      <div id="registry-summary" class="registry-summary"></div>
+      <div class="registry-filters">
+        <select id="registry-filter-product"></select>
+        <select id="registry-filter-status">
+          <option value="">Все статусы</option>
+          <option value="идея">идея</option>
+          <option value="утверждено">утверждено (не написано)</option>
+          <option value="idea">написано: idea</option>
+          <option value="brief">написано: brief</option>
+          <option value="draft">написано: draft</option>
+          <option value="qc">написано: qc</option>
+          <option value="published">опубликовано</option>
+        </select>
+        <select id="registry-filter-intent">
+          <option value="">Все интенты</option>
+          <option value="commercial">коммерческое</option>
+          <option value="informational">информационное</option>
+          <option value="navigational">навигационное</option>
+          <option value="brand">брендовое</option>
+        </select>
+        <select id="registry-filter-fit">
+          <option value="">Любое соответствие</option>
+          <option value="anchor">якорная</option>
+          <option value="peripheral">периферийная</option>
+        </select>
+      </div>
+      <div id="registry-table"></div>
+      <div id="registry-orphans"></div>
+    </div>
+  </div>
+
+  <div id="topic-detail-modal" class="modal-overlay" hidden>
+    <div class="modal-card" id="topic-detail-content"></div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

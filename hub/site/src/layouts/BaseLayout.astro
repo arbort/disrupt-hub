@@ -1,0 +1,38 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  robots?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description, canonical, ogImage, robots, jsonLd } = Astro.props;
+---
+
+<html lang="ru" data-color-scheme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta name="robots" content={robots ?? "index, follow"} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

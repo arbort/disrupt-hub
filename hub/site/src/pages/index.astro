@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ProductCard from "../components/ProductCard.astro";
+import { products } from "../data/products";
+
+const allArticles = await getCollection("articles", ({ data }) => data.status === "published");
+
+function countFor(slug: string) {
+  return allArticles.filter((a) => a.data.product === slug).length;
+}
+---
+
+<BaseLayout
+  title="Disrupt-Hub — что можно сделать продуктами Дизрапта"
+  description="E2E-статьи и гайды о применении продуктов Дизрапта в реальных рабочих и жизненных сценариях."
+>
+  <Header />
+  <main class="container">
+    <section class="hero">
+      <h1 class="h1">Что можно сделать продуктами Дизрапта</h1>
+      <p class="subtitle hero__lead">
+        Реальные сценарии применения, а не список функций. Выберите продукт —
+        внутри разборы задач со скринами, настройками и промптами.
+      </p>
+    </section>
+
+    <section class="grid">
+      {
+        products.map((product) => (
+          <ProductCard product={product} articleCount={countFor(product.slug)} />
+        ))
+      }
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: var(--ui-space-44) 0 var(--ui-space-32);
+    max-width: 640px;
+  }
+  .hero__lead {
+    margin-top: var(--ui-space-16);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: var(--ui-space-16);
+    padding-bottom: var(--ui-space-44);
+  }
+</style>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout title="Страница не найдена — Disrupt-Hub">
+  <Header />
+  <main class="container">
+    <h1 class="h1">Страница не найдена</h1>
+    <p class="lead">Такой статьи здесь нет. <a href="/">Вернуться на главную</a>.</p>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .lead {
+    margin-top: var(--ui-space-16);
+    padding-bottom: var(--ui-space-44);
+    color: var(--primary-70);
+  }
+</style>

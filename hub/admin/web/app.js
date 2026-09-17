@@ -373,12 +373,12 @@ function readFormIntoCurrent() {
 
 // Арсений сообщил, что фикс с #seo-checks-container не снял проблему на
 // практике (возможно, кэш браузера отдавал старый app.js) — по прямому
-// запросу добавлена пауза: чек-лист пересчитывается через 5с после
+// запросу добавлена пауза: чек-лист пересчитывается через 2с после
 // последней буквы, а не на каждое нажатие. Это не завязано на причину
 // исходного бага (тот фикс остаётся — сам input по-прежнему не
 // пересоздаётся), а работает как независимая подстраховка: даже если
 // где-то ещё раз в секунду что-то дёргает панель, пользователь получает
-// сплошные 5 секунд ввода без вмешательства.
+// сплошные 2 секунды ввода без вмешательства.
 function debounce(fn, delayMs) {
   let timer = null;
   return (...args) => {
@@ -386,7 +386,7 @@ function debounce(fn, delayMs) {
     timer = setTimeout(() => fn(...args), delayMs);
   };
 }
-const debouncedRenderSeoChecksList = debounce(renderSeoChecksList, 5000);
+const debouncedRenderSeoChecksList = debounce(renderSeoChecksList, 2000);
 
 function onFieldChange() {
   readFormIntoCurrent();

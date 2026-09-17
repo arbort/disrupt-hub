@@ -1204,7 +1204,7 @@ function renderSyndicationList() {
   items.sort((a, b) => (a.key > b.key ? 1 : -1));
 
   if (!items.length) {
-    listEl.innerHTML = '<div class="empty-list">Пакетов синдикации пока нет</div>';
+    listEl.innerHTML = '<div class="empty-list">Пакетов для блогов пока нет</div>';
     return;
   }
   listEl.innerHTML = "";
@@ -1232,7 +1232,7 @@ document.getElementById("new-syndication-btn").addEventListener("click", () => {
   }
   const original = articles.find((i) => !isTopicOverride(i) && !isBrief(i) && !isSyndication(i) && i.frontmatter.topicId === topicId);
   if (!original) {
-    alert(`Статья с topicId "${topicId}" не найдена в бакете — синдикация готовится после публикации оригинала (Stage 7, гейт «после индексации»). Убедитесь, что статья уже есть во вкладке «Статьи».`);
+    alert(`Статья с topicId "${topicId}" не найдена в бакете — материал для блогов готовится после публикации оригинала (Stage 7, гейт «после индексации»). Убедитесь, что статья уже есть во вкладке «Статьи».`);
     return;
   }
   const key = `${SYNDICATION_PREFIX}${platform.trim()}/${topicId}.md`;

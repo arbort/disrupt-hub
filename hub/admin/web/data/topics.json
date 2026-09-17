@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-17T17:08:36.128Z",
+  "generatedAt": "2026-09-17T18:51:07.995Z",
   "topics": [
     {
       "topicId": "aiwa-1",
@@ -525,7 +525,7 @@
       "cluster": "навигационное",
       "feature": "установка и первый запуск",
       "audience": "пользователи Mac, командные роли",
-      "frequency": "`[TBD]`",
+      "frequency": "1",
       "status": "идея",
       "productFit": "peripheral"
     },
@@ -837,7 +837,7 @@
       "cluster": "брендовое / имиджевое",
       "feature": "демонстрация ценности отчёта (нужен реальный пример)",
       "audience": "предприниматели, продакты",
-      "frequency": "`[TBD]`",
+      "frequency": "1",
       "status": "идея",
       "productFit": "anchor"
     },

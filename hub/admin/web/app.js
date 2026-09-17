@@ -740,9 +740,11 @@ function renderRegistry() {
   let filtered = rows;
   if (productFilter) filtered = filtered.filter((r) => r.product === productFilter);
   if (statusFilter) {
-    filtered = filtered.filter((r) =>
-      statusFilter === "идея" || statusFilter === "утверждено" ? (!r.written && r.baseStatus === statusFilter) : r.effectiveStatus === statusFilter,
-    );
+    filtered = filtered.filter((r) => {
+      if (statusFilter === "идея" || statusFilter === "утверждено") return !r.written && r.baseStatus === statusFilter;
+      if (statusFilter === "блокировано") return !r.written && r.baseStatus.includes("блокировано");
+      return r.effectiveStatus === statusFilter;
+    });
   }
   if (intentFilter) filtered = filtered.filter((r) => r.intent === intentFilter);
   if (fitFilter) filtered = filtered.filter((r) => r.fit === fitFilter);
@@ -828,6 +830,29 @@ function renderRegistry() {
   }
   for (const btn of document.querySelectorAll(".registry-open-brief")) {
     btn.addEventListener("click", () => openBriefDetail(btn.dataset.topicId));
+  }
+
+  // --- статьи без topicId (не привязаны к бэклогу) ---
+  // Баг 2026-09-17: этот блок раньше жил внутри openTopicDetail() и ссылался
+  // на orphanArticles из чужой функции (ReferenceError при каждом клике по
+  // теме, сам блок никогда не рендерился). Возвращён туда, где вычисляется
+  // orphanArticles, — см. HUB.md "Дашборд «Реестр тем»".
+  document.getElementById("registry-orphans").innerHTML = orphanArticles.length
+    ? `<h3 class="registry-orphans__title">Статьи без ID темы из бэклога (${orphanArticles.length})</h3>
+       <div class="registry-orphans__list">
+         ${orphanArticles.map((item) => `
+           <button class="article-row registry-open" data-key="${escapeHtml(item.key)}">
+             <span class="article-row__title">${escapeHtml(item.frontmatter.title || item.key)}</span>
+             <span class="article-row__meta"><span class="chip ${item.frontmatter.status || "idea"}">${item.frontmatter.status || "idea"}</span>${escapeHtml(item.key)}</span>
+           </button>
+         `).join("")}
+       </div>`
+    : "";
+  for (const btn of document.querySelectorAll("#registry-orphans .registry-open")) {
+    btn.addEventListener("click", () => {
+      switchTab("articles");
+      openArticle(btn.dataset.key);
+    });
   }
 }
 
@@ -1054,25 +1079,6 @@ function openTopicDetail(topicId) {
   `;
   topicDetailModal.hidden = false;
   document.getElementById("topic-detail-close").addEventListener("click", closeTopicDetail);
-
-  // --- статьи без topicId (не привязаны к бэклогу) ---
-  document.getElementById("registry-orphans").innerHTML = orphanArticles.length
-    ? `<h3 class="registry-orphans__title">Статьи без ID темы из бэклога (${orphanArticles.length})</h3>
-       <div class="registry-orphans__list">
-         ${orphanArticles.map((item) => `
-           <button class="article-row registry-open" data-key="${escapeHtml(item.key)}">
-             <span class="article-row__title">${escapeHtml(item.frontmatter.title || item.key)}</span>
-             <span class="article-row__meta"><span class="chip ${item.frontmatter.status || "idea"}">${item.frontmatter.status || "idea"}</span>${escapeHtml(item.key)}</span>
-           </button>
-         `).join("")}
-       </div>`
-    : "";
-  for (const btn of document.querySelectorAll("#registry-orphans .registry-open")) {
-    btn.addEventListener("click", () => {
-      switchTab("articles");
-      openArticle(btn.dataset.key);
-    });
-  }
 }
 
 // ---------- Синдикация (Stage 7, добавлено 2026-09-17) ----------

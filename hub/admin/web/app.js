@@ -947,6 +947,54 @@ function renderBriefs() {
   }
 }
 
+// ---------- разбивка ТЗ по разделам (2026-09-17) ----------
+// ТЗ (см. hub/briefs/.../*.md) устроено как markdown с заголовками верхнего
+// уровня `## Раздел` (Мета, Кластер интентов, Конкурентная выдача, Аутлайн,
+// Внутренняя перелинковка, Источники фактов, Продуктовые ограничения) — то
+// же деление, что задаёт структура Stage 2 в HUB.md. Раньше вся модалка была
+// одним marked.parse(body) — здесь режем по `## ` на отдельные секции и
+// рендерим каждую отдельным боксом, а не одним длинным полотном для скролла.
+function splitBriefSections(body) {
+  const lines = (body || "").split(/\r?\n/);
+  const sections = [];
+  let current = { title: null, lines: [] };
+  for (const line of lines) {
+    const m = line.match(/^##\s+(.+?)\s*$/);
+    if (m) {
+      sections.push(current);
+      current = { title: m[1].trim(), lines: [] };
+    } else {
+      current.lines.push(line);
+    }
+  }
+  sections.push(current);
+  return sections
+    .map((s) => ({ title: s.title, content: s.lines.join("\n").trim() }))
+    .filter((s) => s.title || s.content);
+}
+
+function renderBriefBody(body) {
+  const sections = splitBriefSections(body);
+  if (!sections.length) return '<div class="modal-note">ТЗ пустое.</div>';
+
+  const intro = sections[0].title ? null : sections[0];
+  const rest = sections[0].title ? sections : sections.slice(1);
+
+  const introHtml = intro && intro.content
+    ? `<div class="brief-intro">${window.marked ? marked.parse(intro.content) : escapeHtml(intro.content)}</div>`
+    : "";
+
+  const cardsHtml = rest
+    .map((s) => {
+      const wide = /аутлайн|конкурент/i.test(s.title || "") ? " brief-card--wide" : "";
+      const parsed = window.marked ? marked.parse(s.content || "") : `<p>${escapeHtml(s.content || "")}</p>`;
+      return `<div class="brief-card${wide}"><h3 class="brief-card__title">${escapeHtml(s.title || "")}</h3><div class="brief-card__body">${parsed}</div></div>`;
+    })
+    .join("");
+
+  return `${introHtml}<div class="brief-grid">${cardsHtml}</div>`;
+}
+
 // ---------- модалка ТЗ ----------
 
 const briefDetailModal = document.getElementById("brief-detail-modal");
@@ -1001,7 +1049,7 @@ async function openBriefDetail(topicId) {
     <h2>${escapeHtml(fm.topicId || topicId)}</h2>
     <div class="modal-subtitle">${product ? product.name : fm.product || ""} · <span class="chip ${fm.status}">${escapeHtml(fm.status || "draft")}</span></div>
     <div class="modal-note" style="margin:12px 0">Гейт 2 (HUB.md, «Двухступенчатый гейт») — пока статус не «approved», ни hub-writer, ни routine не начинают черновик по этой теме.</div>
-    <div class="preview-box">${window.marked ? marked.parse(body || "") : escapeHtml(body || "")}</div>
+    ${renderBriefBody(body)}
     <div class="modal-close-row">
       ${actionsHtml}
       <button class="btn" id="brief-detail-close">Закрыть</button>

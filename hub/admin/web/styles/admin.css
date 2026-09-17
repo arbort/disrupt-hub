@@ -248,6 +248,41 @@ a { color: var(--accent-blue); }
 /* --- модалка ТЗ (Stage 2, Гейт 2 — добавлено 2026-09-17): контент длиннее, чем разбивка частотности --- */
 #brief-detail-content { max-width: 820px; }
 
+/* --- ТЗ разбито по разделам-боксам (2026-09-17, вместо одного длинного
+   markdown-полотна в .preview-box) --- */
+#brief-detail-modal #brief-detail-content { max-width: 1160px; max-height: 88vh; }
+.brief-intro { padding-bottom: var(--ui-space-16); margin-bottom: var(--ui-space-16); border-bottom: 1px solid var(--primary-8); }
+.brief-intro h1 { font-size: var(--ui-title-24-font-size); margin: 0 0 var(--ui-space-8); }
+.brief-intro p { margin: var(--ui-space-4) 0; color: var(--primary-70); }
+.brief-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--ui-space-16);
+  align-items: start;
+}
+.brief-card {
+  background: var(--elevation-2, var(--primary-4));
+  border: 1px solid var(--primary-8);
+  border-radius: var(--ui-radius-12);
+  padding: var(--ui-space-16);
+  min-width: 0;
+}
+.brief-card--wide { grid-column: 1 / -1; }
+.brief-card__title {
+  font-size: var(--ui-caption-font-size);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--accent-blue);
+  margin: 0 0 var(--ui-space-12);
+}
+.brief-card__body { font-size: var(--ui-subtitle-font-size); overflow-x: auto; }
+.brief-card__body :first-child { margin-top: 0; }
+.brief-card__body :last-child { margin-bottom: 0; }
+.brief-card__body table { border-collapse: collapse; width: 100%; font-size: var(--ui-caption-font-size); }
+.brief-card__body th, .brief-card__body td { border: 1px solid var(--primary-8); padding: var(--ui-space-6) var(--ui-space-8); text-align: left; vertical-align: top; }
+.brief-card__body h3 { font-size: var(--ui-subtitle-font-size); text-transform: none; letter-spacing: normal; color: var(--primary-90); margin: var(--ui-space-16) 0 var(--ui-space-4); }
+.brief-card__body h4 { font-size: var(--ui-subtitle-font-size); margin: var(--ui-space-12) 0 var(--ui-space-4); color: var(--primary-70); }
+
 /* --- editor --- */
 .editor {
   overflow-y: auto;

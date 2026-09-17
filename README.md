@@ -5,6 +5,7 @@
 disrupt-hub — это проект библиотеки E2E-кейсов о применении девяти AI-продуктов Дизрапта в реальных рабочих и жизненных сценариях: реальные скрины, настройки, промпты.
 
 Платформа (сайт): https://disrupt-hub-deploy.website.yandexcloud.net/
+
 Админ-панель: https://disrupt-hub-deploy.website.yandexcloud.net/admin/
 
 

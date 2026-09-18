@@ -1527,7 +1527,7 @@ function semmapAdRow(g, maxLog) {
 //    - "Узко" — объём ниже целевой полосы (порог 5000 — тот же, что
 //      отделяет "узкую" полосу от "целевой зоны" в остальной
 //      "Семантической карте", не новое произвольное число);
-//    - "Есть потенциал" — всё остальное: объём в целевой зоне или выше, не
+//    - "Потенциал статьи" — всё остальное: объём в целевой зоне или выше, не
 //      бренд-шум, ещё не тема.
 const SEMTREE_SOURCE_LABEL = { head: "голова", similar: "похожая", association: "смежная" };
 const SEMTREE_NARROW_THRESHOLD = 5000;
@@ -1550,7 +1550,7 @@ function semmapNodeContentStatus(node, topicByPhrase, product) {
   if (node.count < SEMTREE_NARROW_THRESHOLD) {
     return { label: "Узко", color: "var(--accent-orange)" };
   }
-  return { label: "Есть потенциал", color: "var(--accent-green)" };
+  return { label: "Потенциал статьи", color: "var(--accent-green)" };
 }
 
 function semmapDrillStatus(node) {

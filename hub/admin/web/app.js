@@ -750,11 +750,18 @@ function renderRegistry() {
     const phrase = (topicFreqDetails && topicFreqDetails[t.topicId] && topicFreqDetails[t.topicId].phrase) || null;
     return { ...t, article, hasOverride: Boolean(override), baseStatus, effectiveStatus, written, intent, fit, freqNum, ptraf, score, phrase };
   });
-  // Правило 2026-09-18: темы с измеренной частотностью < MIN_TOPIC_FREQUENCY
-  // не показываются в реестре вообще — ни в таблице, ни в сводке по
-  // продуктам. Темы без данных (freqNum === null, `[TBD]`) остаются видимы.
-  const hiddenLowVolumeCount = rowsAll.filter((r) => r.freqNum != null && r.freqNum < MIN_TOPIC_FREQUENCY).length;
-  const rows = rowsAll.filter((r) => r.freqNum == null || r.freqNum >= MIN_TOPIC_FREQUENCY);
+  // Правило 2026-09-18, расширено 2026-09-19: темы с измеренной
+  // частотностью < MIN_TOPIC_FREQUENCY не показываются в реестре — ни в
+  // таблице, ни в сводке по продуктам. Изначально темы без данных
+  // (freqNum === null, `[TBD]`) были исключением ("ещё не измерена, не
+  // дисквалифицирована") — Арсений указал, что это дыра: проверка
+  // apply-topic-frequency.py по всем 23 таким темам прошла без единого
+  // нового вызова API (0 из кэша) — то есть Wordstat уже отвечал по ним
+  // "нет данных", это не "ещё не проверяли", а подтверждённое отсутствие
+  // спроса. Отсутствие данных теперь равнозначно провалу порога, не
+  // исключение из него.
+  const hiddenLowVolumeCount = rowsAll.filter((r) => r.freqNum == null || r.freqNum < MIN_TOPIC_FREQUENCY).length;
+  const rows = rowsAll.filter((r) => r.freqNum != null && r.freqNum >= MIN_TOPIC_FREQUENCY);
   registryRowsById = new Map(rows.map((r) => [r.topicId, r]));
 
   // --- сводка ---
@@ -790,7 +797,7 @@ function renderRegistry() {
         }).join("")}
       </tbody>
     </table>
-    ${hiddenLowVolumeCount ? `<div class="modal-note" style="margin-top:var(--ui-space-8)">Скрыто правилом «частотность &lt; ${MIN_TOPIC_FREQUENCY}» — ${hiddenLowVolumeCount} тем (см. HUB.md, «Жёсткие правила»). Не удалены из бэклога, только не показываются в реестре.</div>` : ""}
+    ${hiddenLowVolumeCount ? `<div class="modal-note" style="margin-top:var(--ui-space-8)">Скрыто правилом «частотность &lt; ${MIN_TOPIC_FREQUENCY} или нет данных» — ${hiddenLowVolumeCount} тем (см. HUB.md, «Жёсткие правила»). Не удалены из бэклога, только не показываются в реестре.</div>` : ""}
   `;
 
   // --- таблица тем ---

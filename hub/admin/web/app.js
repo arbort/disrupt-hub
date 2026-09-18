@@ -611,6 +611,7 @@ const viewSemanticEl = document.getElementById("view-semantic");
 let topics = null; // кэш data/topics.json, грузится один раз за сессию
 let topicFreqDetails = null; // кэш data/topic-frequency-details.json — разбивка по похожим/смежным запросам
 let semanticMap = null; // кэш data/semantic-map.json (вкладка "Семантическая карта")
+let semanticTree = null; // кэш data/semantic-tree.json — дерево бурения (2026-09-19)
 let registrySort = { key: null, dir: "desc" }; // сортировка таблицы реестра по клику на заголовок колонки
 let registryRowsById = new Map(); // последний рендер реестра — для модалки деталей по клику
 let briefRowsByTopicId = new Map(); // последний рендер вкладки "ТЗ" — для модалки и для ссылки "ТЗ →" из реестра тем
@@ -1432,6 +1433,14 @@ async function loadSemanticMap() {
       if (!res.ok) throw new Error(String(res.status));
       semanticMap = await res.json();
     }
+    if (!semanticTree) {
+      try {
+        const res = await fetch("data/semantic-tree.json", { cache: "no-store" });
+        semanticTree = res.ok ? await res.json() : { products: {} };
+      } catch {
+        semanticTree = { products: {} };
+      }
+    }
     renderSemanticMap();
   } catch (e) {
     document.getElementById("semantic-products").innerHTML =
@@ -1483,6 +1492,74 @@ function semmapAdRow(g, maxLog) {
       <div class="semmap-row__track"><div class="semmap-row__fill" style="width:${width}%;background:${color}"></div></div>
       <div class="semmap-row__count">${g.conversions.toLocaleString("ru-RU")} конв</div>
       <div class="semmap-row__meta">${escapeHtml(meta)}</div>
+    </div>`;
+}
+
+// ---------- Дерево семантики (2026-09-19) ----------
+// Диагноз Арсения: сборка семантики — творческий процесс, а не механический
+// (один запрос → сразу выбор темы по числу). Исправленный Stage 1 (HUB.md)
+// требует бурить вглубь на 2-3 прохода, пока ветка продуктивна, и только
+// тогда решать, какая ветка приглашает показать сильную сторону продукта.
+// Дерево строит admin/scripts/drill-semantic-tree.py (не в реальном
+// времени, статика — тот же принцип "не трогать Cloud Function"). Здесь —
+// только визуализация: вычерпанные узлы (пробурены дальше) vs листья
+// (кандидаты, ждут решения человека) vs узлы, уже ставшие темой.
+const SEMTREE_SOURCE_LABEL = { head: "голова", similar: "похожая", association: "смежная" };
+
+function semmapTreeNode(node, childrenByParent, depth, topicByPhrase) {
+  const children = (childrenByParent[node.id] || []).slice().sort((a, b) => b.count - a.count);
+  const isExhausted = node.status === "exhausted";
+  const statusLabel = isExhausted ? "вычерпано" : "лист";
+  const statusColor = isExhausted ? "var(--primary-40)" : "var(--accent-green)";
+  const sourceLabel = SEMTREE_SOURCE_LABEL[node.source] || node.source;
+  const topic = topicByPhrase.get(norm(node.phrase));
+  const topicBadge = topic
+    ? ` · <strong style="color:var(--accent-blue)">→ ${escapeHtml(topic.topicId)}</strong>`
+    : "";
+  const noteHtml = node.note ? `<div class="semtree-node__note">«${escapeHtml(node.note)}»</div>` : "";
+  const childrenHtml = children.map((c) => semmapTreeNode(c, childrenByParent, depth + 1, topicByPhrase)).join("");
+  return `
+    <div class="semtree-node" style="padding-left:${depth * 22}px">
+      <span class="semtree-node__phrase">${escapeHtml(node.phrase)}</span>
+      <span class="semtree-node__count">${node.count.toLocaleString("ru-RU")}</span>
+      <span class="semtree-node__tag" style="color:${statusColor}">${statusLabel}</span>
+      <span class="semtree-node__source">${sourceLabel}</span>${topicBadge}
+      ${noteHtml}
+    </div>${childrenHtml}`;
+}
+
+function renderSemanticTreeBlock(product) {
+  const productTrees = (semanticTree && semanticTree.products && semanticTree.products[product] && semanticTree.products[product].trees) || [];
+  if (!productTrees.length) return "";
+
+  // Узел → тема: точное совпадение нормализованной фразы с headPhrase темы
+  // (той самой фразой, по которой снималась частотность темы). Это факт
+  // отображения, не эвристика покрытия — для неё см. adPerformance выше.
+  const topicByPhrase = new Map();
+  const productTopics = (semanticMap.products[product] && semanticMap.products[product].topics) || [];
+  for (const t of productTopics) {
+    if (t.headPhrase) topicByPhrase.set(norm(t.headPhrase), t);
+  }
+
+  const treesHtml = productTrees.map((tree) => {
+    const childrenByParent = {};
+    for (const n of tree.nodes) {
+      if (!n.parentId) continue;
+      (childrenByParent[n.parentId] ||= []).push(n);
+    }
+    const root = tree.nodes.find((n) => n.depth === 0);
+    if (!root) return "";
+    return `
+      <div class="semtree">
+        <div class="semtree__root">Корень: «${escapeHtml(tree.rootPhrase)}»${tree.scenario ? ` · сценарий «${escapeHtml(tree.scenario)}»` : ""} · узлов: ${tree.nodes.length}</div>
+        ${semmapTreeNode(root, childrenByParent, 0, topicByPhrase)}
+      </div>`;
+  }).join("");
+
+  return `
+    <div class="semmap-section semmap-section--tree">
+      <h4>Дерево семантики — куда бурили и где вычерпано</h4>
+      ${treesHtml}
     </div>`;
 }
 
@@ -1573,6 +1650,8 @@ function renderSemanticMap() {
         </div>`
       : "";
 
+    const treeHtml = renderSemanticTreeBlock(prod.slug);
+
     return `
       <div class="semmap-product">
         <div class="semmap-product__header">
@@ -1580,6 +1659,7 @@ function renderSemanticMap() {
           <div class="semmap-band-chips">${chips}</div>
         </div>
         ${adsHtml}
+        ${treeHtml}
         <div class="semmap-section">
           <h4>Темы бэклога по объёму спроса (Wordstat)</h4>
           ${topicsHtml || '<div class="empty-list">Нет тем с данными</div>'}

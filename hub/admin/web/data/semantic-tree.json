@@ -1,0 +1,693 @@
+{
+  "generatedAt": "2026-09-18T07:55:31.607789+00:00",
+  "products": {
+    "tool": {
+      "trees": [
+        {
+          "rootPhrase": "презентация нейросеть",
+          "scenario": "презентация",
+          "createdAt": "2026-09-18",
+          "nodes": [
+            {
+              "id": "n0",
+              "phrase": "презентация нейросеть",
+              "count": 159709,
+              "depth": 0,
+              "parentId": null,
+              "source": "head",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n1",
+              "phrase": "gemini нейросеть",
+              "count": 10366,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n2",
+              "phrase": "айдентика нейросеть",
+              "count": 3321,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n3",
+              "phrase": "генерация картинок нейросетью",
+              "count": 14225,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n4",
+              "phrase": "нейро слайд",
+              "count": 616,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n5",
+              "phrase": "нейросеть для презентаций",
+              "count": 84290,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n6",
+              "phrase": "гамма нейросеть для презентаций",
+              "count": 29485,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n7",
+              "phrase": "нейросеть для презентаций бесплатно",
+              "count": 17981,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n8",
+              "phrase": "нейросеть сделать презентацию",
+              "count": 15585,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n9",
+              "phrase": "gammas нейросеть для презентаций",
+              "count": 14282,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n10",
+              "phrase": "ии презентации нейросеть",
+              "count": 12594,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n11",
+              "phrase": "нейросеть для создания презентаций",
+              "count": 12610,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n12",
+              "phrase": "презентация с помощью нейросети",
+              "count": 12100,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n13",
+              "phrase": "ии презентации нейросеть бесплатно",
+              "count": 11466,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n14",
+              "phrase": "сделать презентацию нейросеть бесплатно",
+              "count": 11408,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n15",
+              "phrase": "нейросеть для создания презентаций бесплатно",
+              "count": 5591,
+              "depth": 2,
+              "parentId": "n5",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n16",
+              "phrase": "нейросеть для презентаций на русском",
+              "count": 3047,
+              "depth": 2,
+              "parentId": "n5",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n17",
+              "phrase": "ai нейросеть для презентаций",
+              "count": 2796,
+              "depth": 2,
+              "parentId": "n5",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n18",
+              "phrase": "нейросеть для генерации презентаций",
+              "count": 2536,
+              "depth": 2,
+              "parentId": "n5",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n19",
+              "phrase": "бесплатная нейросеть для презентаций на русском",
+              "count": 1980,
+              "depth": 2,
+              "parentId": "n5",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n20",
+              "phrase": "перплексити нейросеть",
+              "count": 10125,
+              "depth": 3,
+              "parentId": "n6",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n21",
+              "phrase": "гига чат нейросеть официальный",
+              "count": 136862,
+              "depth": 3,
+              "parentId": "n6",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n22",
+              "phrase": "gamma ai презентации",
+              "count": 4812,
+              "depth": 3,
+              "parentId": "n6",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n23",
+              "phrase": "гамма нейросеть для презентаций бесплатная",
+              "count": 1725,
+              "depth": 3,
+              "parentId": "n6",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n24",
+              "phrase": "гамма апп нейросеть для презентаций",
+              "count": 1207,
+              "depth": 3,
+              "parentId": "n6",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n25",
+              "phrase": "гамма нейросеть для презентаций на русском",
+              "count": 828,
+              "depth": 3,
+              "parentId": "n6",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n26",
+              "phrase": "бесплатная нейросеть для генерации изображений",
+              "count": 20883,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n27",
+              "phrase": "бесплатные нейросети для генерации видео",
+              "count": 6442,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n28",
+              "phrase": "лучшие бесплатные нейросети",
+              "count": 18002,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n29",
+              "phrase": "топ бесплатных нейросетей",
+              "count": 1912,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n30",
+              "phrase": "нейросеть для генерации презентаций бесплатно",
+              "count": 1074,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n31",
+              "phrase": "нейросеть для презентации онлайн бесплатно",
+              "count": 876,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n32",
+              "phrase": "бесплатная нейросеть для создания презентаций на русском",
+              "count": 780,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n33",
+              "phrase": "gamma нейросеть для презентаций бесплатно",
+              "count": 655,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n34",
+              "phrase": "нейросеть для презентаций бесплатно без регистрации",
+              "count": 612,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n35",
+              "phrase": "нейросеть для презентаций бесплатно на русском языке",
+              "count": 539,
+              "depth": 3,
+              "parentId": "n7",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n36",
+              "phrase": "qwen нейросеть",
+              "count": 30705,
+              "depth": 3,
+              "parentId": "n9",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n37",
+              "phrase": "нейросеть для презентаций gamma",
+              "count": 14282,
+              "depth": 3,
+              "parentId": "n9",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n38",
+              "phrase": "gamma app нейросеть для презентаций",
+              "count": 811,
+              "depth": 3,
+              "parentId": "n9",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n39",
+              "phrase": "gamma нейросеть для презентаций на русском",
+              "count": 646,
+              "depth": 3,
+              "parentId": "n9",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n40",
+              "phrase": "создать презентацию бесплатно",
+              "count": 41020,
+              "depth": 3,
+              "parentId": "n11",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n41",
+              "phrase": "нейросеть для создания презентации русские",
+              "count": 819,
+              "depth": 3,
+              "parentId": "n11",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n42",
+              "phrase": "сократик презентации нейросеть для создания",
+              "count": 558,
+              "depth": 3,
+              "parentId": "n11",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n43",
+              "phrase": "ии для создания презентаций",
+              "count": 14408,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n44",
+              "phrase": "нейросфера нейросеть бесплатно",
+              "count": 1201,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n45",
+              "phrase": "сделать презентацию с помощью нейросети",
+              "count": 7858,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n46",
+              "phrase": "сделать презентацию с помощью нейросети бесплатно",
+              "count": 7237,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "similar",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n47",
+              "phrase": "сделать презентацию онлайн нейросеть",
+              "count": 1816,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n48",
+              "phrase": "сделать презентацию онлайн нейросеть бесплатно",
+              "count": 1401,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n49",
+              "phrase": "сделай презентацию по тексту нейросеть",
+              "count": 669,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n50",
+              "phrase": "сделать презентацию через нейросеть",
+              "count": 607,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n51",
+              "phrase": "сделать презентацию без нейросети",
+              "count": 510,
+              "depth": 2,
+              "parentId": "n8",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n52",
+              "phrase": "бесплатная нейросеть для создания изображений",
+              "count": 2576,
+              "depth": 3,
+              "parentId": "n14",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n53",
+              "phrase": "бесплатная нейросеть для создания картинок",
+              "count": 3532,
+              "depth": 3,
+              "parentId": "n14",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n54",
+              "phrase": "прохожу верити со своей тупой нейросетью",
+              "count": 725,
+              "depth": 3,
+              "parentId": "n45",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n55",
+              "phrase": "создать презентацию онлайн бесплатно",
+              "count": 24235,
+              "depth": 3,
+              "parentId": "n45",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n56",
+              "phrase": "расскажи снегурочка где была нейросеть",
+              "count": 963,
+              "depth": 3,
+              "parentId": "n45",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n57",
+              "phrase": "задать вопрос нейросети",
+              "count": 5838,
+              "depth": 3,
+              "parentId": "n45",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n58",
+              "phrase": "курсы по нейросетям",
+              "count": 9659,
+              "depth": 3,
+              "parentId": "n45",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n59",
+              "phrase": "бесплатные курсы по нейросетям",
+              "count": 1693,
+              "depth": 3,
+              "parentId": "n46",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            }
+          ]
+        },
+        {
+          "rootPhrase": "таблица нейросеть",
+          "scenario": "таблица",
+          "createdAt": "2026-09-18",
+          "nodes": [
+            {
+              "id": "n0",
+              "phrase": "таблица нейросеть",
+              "count": 5417,
+              "depth": 0,
+              "parentId": null,
+              "source": "head",
+              "status": "exhausted",
+              "note": null
+            },
+            {
+              "id": "n1",
+              "phrase": "перплексити нейросеть",
+              "count": 10129,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n2",
+              "phrase": "ии нейросеть бесплатно",
+              "count": 82762,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n3",
+              "phrase": "генерация картинок нейросетью",
+              "count": 14130,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n4",
+              "phrase": "нейросфера нейросеть бесплатно",
+              "count": 1209,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "association",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n5",
+              "phrase": "нейросеть для таблиц",
+              "count": 2405,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            },
+            {
+              "id": "n6",
+              "phrase": "нейросеть таблицы excel",
+              "count": 507,
+              "depth": 1,
+              "parentId": "n0",
+              "source": "similar",
+              "status": "leaf",
+              "note": null
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

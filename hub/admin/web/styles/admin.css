@@ -454,6 +454,32 @@ textarea.body-editor {
 }
 .semmap-section--ads h4 { color: var(--accent-blue); margin-top: 0; }
 
+.semmap-section--tree {
+  margin-bottom: var(--ui-space-20);
+  padding: var(--ui-space-12) var(--ui-space-14);
+  background: color-mix(in srgb, var(--accent-green) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-green) 18%, transparent);
+  border-radius: var(--ui-radius-12);
+}
+.semmap-section--tree h4 { color: var(--accent-green); margin-top: 0; }
+.semtree { margin-bottom: var(--ui-space-16); }
+.semtree:last-child { margin-bottom: 0; }
+.semtree__root { font-size: var(--ui-caption-font-size); color: var(--primary-50); margin-bottom: var(--ui-space-8); font-weight: 600; }
+.semtree-node {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ui-space-8);
+  padding: 3px 0;
+  font-size: var(--ui-caption-font-size);
+  border-bottom: 1px dotted var(--primary-4);
+  flex-wrap: wrap;
+}
+.semtree-node__phrase { color: var(--primary-90); min-width: 160px; }
+.semtree-node__count { font-family: var(--ui-font-mono); color: var(--primary-60); white-space: nowrap; }
+.semtree-node__tag { text-transform: uppercase; letter-spacing: .04em; font-size: 10px; white-space: nowrap; }
+.semtree-node__source { color: var(--primary-40); font-size: 10px; font-style: italic; white-space: nowrap; }
+.semtree-node__note { flex-basis: 100%; color: var(--primary-70); font-style: italic; padding-left: var(--ui-space-8); }
+
 .semmap-row {
   display: grid;
   grid-template-columns: minmax(160px, 280px) 1fr 90px minmax(0, 220px);

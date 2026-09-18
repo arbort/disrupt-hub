@@ -1618,52 +1618,10 @@ function renderSemanticTreeBlock(product) {
 
 function renderSemanticMap() {
   if (!semanticMap) return;
-  const { bands, agencyBenchmark, products, adPerformanceNote } = semanticMap;
-
-  // --- сводка сверху: почему такие полосы и как мы выглядим на их фоне ---
-  const ourCounts = { long_tail: 0, narrow: 0, sweet_spot: 0, head: 0 };
-  let ourTotal = 0;
-  for (const p of Object.values(products)) {
-    for (const [band, n] of Object.entries(p.bandCounts)) {
-      ourCounts[band] += n;
-      ourTotal += n;
-    }
-  }
-  const ourSharePct = (band) => (ourTotal ? Math.round((ourCounts[band] / ourTotal) * 1000) / 10 : 0);
+  const { bands, products } = semanticMap;
 
   document.getElementById("semantic-intro").innerHTML = `
     <h2 style="margin:0 0 var(--ui-space-8)">Семантическая карта</h2>
-    <p class="modal-note" style="font-size:var(--ui-subtitle-font-size);color:var(--primary-70);max-width:820px">
-      Агентство giga.chat не берёт ни сверхширокие головы («нейросеть» — сотни тысяч,
-      выдача занята гигантами и брендами), ни сверхузкие хвосты (десятки запросов —
-      трафика нет физически). У них медиана объёма на уровне готовой страницы —
-      <strong>${agencyBenchmark.medianWS.toLocaleString("ru-RU")}</strong>
-      (${agencyBenchmark.pagesWithData} страниц), самая частая полоса — «Целевая зона»
-      5 000–20 000 (${agencyBenchmark.bandSharePct.sweet_spot}% страниц). У хаба сейчас
-      медиана — ${(() => {
-        const allF = Object.values(products).flatMap((p) => p.topics.map((t) => t.frequency).filter((f) => f != null)).sort((a, b) => a - b);
-        return allF.length ? allF[Math.floor(allF.length / 2)].toLocaleString("ru-RU") : "—";
-      })()},
-      бо́льшая часть тем — длинный хвост.
-      <strong>Найти середину</strong> — это не только полосы Wordstat: там, где
-      есть реальная реклама, сильнее любой оценки объёма — доказанный конверсией
-      спрос нашей же аудитории (раздел «Подтверждено рекламой» по каждому
-      продукту). Там, где рекламных данных ещё нет — полосы Wordstat и
-      «Зоны роста» (уже найденные, но не занятые фразы приличного объёма).
-    </p>
-    ${adPerformanceNote ? `<p class="modal-note" style="max-width:820px">${escapeHtml(adPerformanceNote)}</p>` : ""}
-    <div class="semmap-compare">
-      ${bands.map((b) => `
-        <div class="semmap-compare__row">
-          <div class="semmap-compare__label">${escapeHtml(b.label)}</div>
-          <div class="semmap-compare__bars">
-            <div class="semmap-compare__bar-track"><div class="semmap-compare__bar agency" style="width:${agencyBenchmark.bandSharePct[b.id]}%"></div></div>
-            <div class="semmap-compare__bar-track"><div class="semmap-compare__bar ours" style="width:${ourSharePct(b.id)}%"></div></div>
-          </div>
-          <div class="semmap-compare__pct">giga.chat ${agencyBenchmark.bandSharePct[b.id]}% · хаб ${ourSharePct(b.id)}%</div>
-        </div>
-      `).join("")}
-    </div>
   `;
 
   // --- по продукту ---

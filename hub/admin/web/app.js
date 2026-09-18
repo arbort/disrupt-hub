@@ -1501,28 +1501,81 @@ function semmapAdRow(g, maxLog) {
 // требует бурить вглубь на 2-3 прохода, пока ветка продуктивна, и только
 // тогда решать, какая ветка приглашает показать сильную сторону продукта.
 // Дерево строит admin/scripts/drill-semantic-tree.py (не в реальном
-// времени, статика — тот же принцип "не трогать Cloud Function"). Здесь —
-// только визуализация: вычерпанные узлы (пробурены дальше) vs листья
-// (кандидаты, ждут решения человека) vs узлы, уже ставшие темой.
+// времени, статика — тот же принцип "не трогать Cloud Function").
+//
+// Статус узла — 2026-09-19, третий проход по прямому требованию Арсения:
+// изначально было одно поле "вычерпано/лист" (факт процесса — бурили мы
+// этот узел дальше или нет), потом попытка заменить его одной оценкой
+// содержания — из-за этого самая интересная ветка дерева ("нейросеть для
+// презентаций бесплатно", 17981 — точное попадание в отличие продукта
+// "бесплатно") показывалась как "вычерпано", будто у неё меньше
+// потенциала, чем у шумной ветки конкурента, которую просто не успели
+// пробурить. Итоговое решение — это ДВА независимых статуса на узел, не
+// один и не взаимозаменяемых:
+//
+// 1. Статус бурения (semmapDrillStatus) — факт процесса, "бурили дальше
+//    или нет": "Пробурено" (exhausted, есть собственные дети из своего
+//    topRequests) / "Бурить дальше" (leaf, ещё не спрашивали Wordstat про
+//    саму эту фразу).
+// 2. Статус содержания (semmapNodeContentStatus) — годится ли фраза в
+//    статью, не зависит от того, бурили её или нет:
+//    - "Есть статья" — фраза уже стала темой (topicByPhrase, см. ниже);
+//    - "Нет потенциала" — известный бренд-шум конкурента
+//      (SEMTREE_NOISE_TERMS, список ведётся вручную по продукту, тот же
+//      приём, что topic-product-fit.json — не пытаемся угадывать бренды
+//      автоматически, только то, что уже опознано человеком);
+//    - "Узко" — объём ниже целевой полосы (порог 5000 — тот же, что
+//      отделяет "узкую" полосу от "целевой зоны" в остальной
+//      "Семантической карте", не новое произвольное число);
+//    - "Есть потенциал" — всё остальное: объём в целевой зоне или выше, не
+//      бренд-шум, ещё не тема.
 const SEMTREE_SOURCE_LABEL = { head: "голова", similar: "похожая", association: "смежная" };
+const SEMTREE_NARROW_THRESHOLD = 5000;
+const SEMTREE_NOISE_TERMS = {
+  // Известный бренд-шум конкурентов — вручную, по мере обнаружения.
+  // Gamma у Мультитула уже задокументирована как бренд-контаминация
+  // (см. HUB.md, ТЗ tool-1) — добавляйте сюда новые термины по факту.
+  tool: ["гамма", "gamma"],
+};
 
-function semmapTreeNode(node, childrenByParent, depth, topicByPhrase) {
+function semmapNodeContentStatus(node, topicByPhrase, product) {
+  if (topicByPhrase.get(norm(node.phrase))) {
+    return { label: "Есть статья", color: "var(--accent-blue)" };
+  }
+  const noiseTerms = SEMTREE_NOISE_TERMS[product] || [];
+  const phraseNorm = norm(node.phrase);
+  if (noiseTerms.some((term) => phraseNorm.includes(term))) {
+    return { label: "Нет потенциала", color: "var(--primary-40)" };
+  }
+  if (node.count < SEMTREE_NARROW_THRESHOLD) {
+    return { label: "Узко", color: "var(--accent-orange)" };
+  }
+  return { label: "Есть потенциал", color: "var(--accent-green)" };
+}
+
+function semmapDrillStatus(node) {
+  return node.status === "exhausted"
+    ? { label: "Пробурено", color: "var(--primary-40)" }
+    : { label: "Бурить дальше", color: "var(--accent-purple)" };
+}
+
+function semmapTreeNode(node, childrenByParent, depth, topicByPhrase, product) {
   const children = (childrenByParent[node.id] || []).slice().sort((a, b) => b.count - a.count);
-  const isExhausted = node.status === "exhausted";
-  const statusLabel = isExhausted ? "вычерпано" : "потенциал для статьи";
-  const statusColor = isExhausted ? "var(--primary-40)" : "var(--accent-green)";
+  const drillStatus = semmapDrillStatus(node);
+  const contentStatus = semmapNodeContentStatus(node, topicByPhrase, product);
   const sourceLabel = SEMTREE_SOURCE_LABEL[node.source] || node.source;
   const topic = topicByPhrase.get(norm(node.phrase));
   const topicBadge = topic
     ? ` · <strong style="color:var(--accent-blue)">→ ${escapeHtml(topic.topicId)}</strong>`
     : "";
   const noteHtml = node.note ? `<div class="semtree-node__note">«${escapeHtml(node.note)}»</div>` : "";
-  const childrenHtml = children.map((c) => semmapTreeNode(c, childrenByParent, depth + 1, topicByPhrase)).join("");
+  const childrenHtml = children.map((c) => semmapTreeNode(c, childrenByParent, depth + 1, topicByPhrase, product)).join("");
   return `
     <div class="semtree-node" style="padding-left:${depth * 22}px">
       <span class="semtree-node__phrase">${escapeHtml(node.phrase)}</span>
       <span class="semtree-node__count">${node.count.toLocaleString("ru-RU")}</span>
-      <span class="semtree-node__tag" style="color:${statusColor}">${statusLabel}</span>
+      <span class="semtree-node__tag" style="color:${drillStatus.color}">${drillStatus.label}</span>
+      <span class="semtree-node__tag" style="color:${contentStatus.color}">${contentStatus.label}</span>
       <span class="semtree-node__source">${sourceLabel}</span>${topicBadge}
       ${noteHtml}
     </div>${childrenHtml}`;
@@ -1552,13 +1605,13 @@ function renderSemanticTreeBlock(product) {
     return `
       <div class="semtree">
         <div class="semtree__root">Корень: «${escapeHtml(tree.rootPhrase)}»${tree.scenario ? ` · сценарий «${escapeHtml(tree.scenario)}»` : ""} · узлов: ${tree.nodes.length}</div>
-        ${semmapTreeNode(root, childrenByParent, 0, topicByPhrase)}
+        ${semmapTreeNode(root, childrenByParent, 0, topicByPhrase, product)}
       </div>`;
   }).join("");
 
   return `
     <div class="semmap-section semmap-section--tree">
-      <h4>Дерево семантики — куда бурили и где вычерпано</h4>
+      <h4>Дерево семантики — от широкого запроса к узким группам</h4>
       ${treesHtml}
     </div>`;
 }

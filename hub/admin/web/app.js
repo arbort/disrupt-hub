@@ -1509,7 +1509,7 @@ const SEMTREE_SOURCE_LABEL = { head: "голова", similar: "похожая", 
 function semmapTreeNode(node, childrenByParent, depth, topicByPhrase) {
   const children = (childrenByParent[node.id] || []).slice().sort((a, b) => b.count - a.count);
   const isExhausted = node.status === "exhausted";
-  const statusLabel = isExhausted ? "вычерпано" : "лист";
+  const statusLabel = isExhausted ? "вычерпано" : "потенциал для статьи";
   const statusColor = isExhausted ? "var(--primary-40)" : "var(--accent-green)";
   const sourceLabel = SEMTREE_SOURCE_LABEL[node.source] || node.source;
   const topic = topicByPhrase.get(norm(node.phrase));
